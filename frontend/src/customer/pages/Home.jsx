@@ -5,6 +5,7 @@ import Product from "../components/Product";
 import { Row, Col } from "react-bootstrap";
 import Slider from "react-slick";
 import { Link } from "react-router-dom";
+import Blog from "../components/Blog";
 
 var settings = {
   dots: false,
@@ -22,6 +23,15 @@ var settingsStyle = {
   slidesToShow: 3,
   slidesToScroll: 1,
   autoplay: false,
+};
+
+var settingsBlog = {
+  dots: false,
+  infinite: true,
+  speed: 300,
+  slidesToShow: 2,
+  slidesToScroll: 1,
+  centerMode: true,
 };
 
 var settingsBanner = {
@@ -209,14 +219,58 @@ function Home() {
       </StylePick>
       <Lookbook>
         <Title>
-          <h2>Lookbook</h2>
+          <h2>LOOKBOOK</h2>
         </Title>
+        <Row>
+          <Col sm="6">
+            <Link to="/">
+              <img
+                src="https://dashboard.leanow.vn/upload/7-2023/1690294640922.webp"
+                alt=""
+              />
+              <h3>Summer Escapism</h3>
+            </Link>
+          </Col>
+          <Col sm="6">
+            <Link to="/">
+              <img
+                src="https://dashboard.leanow.vn/upload/6-2023/1686979068006.webp"
+                alt=""
+              />
+              <h3>Summer Escapism</h3>
+            </Link>
+          </Col>
+          <Col sm="6">
+            <Link to="/">
+              <img
+                src="https://dashboard.leanow.vn/upload/5-2023/1684900801794.webp"
+                alt=""
+              />
+            </Link>
+            <h3>Keep It Classic</h3>
+          </Col>
+          <Col sm="6">
+            <Link to="/">
+              <img
+                src="https://dashboard.leanow.vn/upload/5-2023/1683304629389.webp"
+                alt=""
+              />
+              <h3>Cat & Rabbit Collection</h3>
+            </Link>
+          </Col>
+        </Row>
       </Lookbook>
-      <Blog>
+      <BlogWrapper>
         <Title>
-          <h2>Blog</h2>
+          <h2>BLOG</h2>
         </Title>
-      </Blog>
+        <Slider {...settingsBlog}>
+          <Blog />
+          <Blog />
+          <Blog />
+          <Blog />
+        </Slider>
+      </BlogWrapper>
     </Wrapper>
   );
 }
@@ -299,8 +353,23 @@ const Banner = styled.div`
   }
 `;
 const StylePick = styled.div``;
-const Lookbook = styled.div``;
-const Blog = styled.div``;
+const Lookbook = styled.div`
+  img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    aspect-ratio: 16 / 9;
+  }
+  h3 {
+    text-transform: uppercase;
+    margin-top: 2.5rem;
+    margin-bottom: 2.5rem;
+    text-align: center;
+    font-size: 30px;
+    font-weight: 600;
+  }
+`;
+const BlogWrapper = styled.div``;
 const Title = styled.div`
   padding: 4rem;
   text-align: center;
