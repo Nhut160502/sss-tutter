@@ -6,7 +6,7 @@ function Quantity({ value }) {
       <button className="minus">
         <MinusOutlined />
       </button>
-      <input type="number" value={value || 1} />
+      <input type="number" value={value || 1} onChange={() => console.log()} />
       <button className="plus">
         <PlusOutlined />
       </button>

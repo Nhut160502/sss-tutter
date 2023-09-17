@@ -41,3 +41,6 @@ input[type=number] {
 input{
   outline: none;
 }
+li{
+  list-style: none;
+}

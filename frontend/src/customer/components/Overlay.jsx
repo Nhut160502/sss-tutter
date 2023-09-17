@@ -1,7 +1,11 @@
+import { useSelector } from "react-redux";
 import { styled } from "styled-components";
 
-function Overlay({ active }) {
-  return <Wrapper className={active && "active"}></Wrapper>;
+function Overlay({ onClick }) {
+  const visibility = useSelector((state) => state?.overlay?.visibility);
+  return (
+    <Wrapper className={visibility && "active"} onClick={onClick}></Wrapper>
+  );
 }
 const Wrapper = styled.div`
   width: 100%;

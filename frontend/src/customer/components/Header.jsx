@@ -5,9 +5,18 @@ import styled from "styled-components";
 import { SearchOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import Overlay from "./Overlay";
 import Cart from "./Cart";
+import { useDispatch } from "react-redux";
+import { hideCart, visibilityCart } from "../providers/cartSlice";
+import { hideOverlay, visibilityOverlay } from "../providers/overlaySlice";
 // import Search from "./Search";
 
 function Header() {
+  const dispatch = useDispatch();
+  const handleClickOpenCart = () => {
+    dispatch(visibilityCart());
+    dispatch(visibilityOverlay());
+  };
+
   var settings = {
     dots: false,
     infinite: true,
@@ -16,6 +25,7 @@ function Header() {
     slidesToScroll: 1,
     autoplay: true,
   };
+
   return (
     <>
       <Wrapper>
@@ -54,7 +64,7 @@ function Header() {
             <Col sm="4">
               <Right>
                 <SearchOutlined />
-                <ShoppingCartOutlined />
+                <ShoppingCartOutlined onClick={handleClickOpenCart} />
               </Right>
             </Col>
           </Row>
@@ -62,7 +72,12 @@ function Header() {
         {/* <Search />/ */}
         <Cart />
       </Wrapper>
-      <Overlay />
+      <Overlay
+        onClick={() => {
+          dispatch(hideCart());
+          dispatch(hideOverlay());
+        }}
+      />
     </>
   );
 }

@@ -3,13 +3,23 @@ import { CloseOutlined } from "@ant-design/icons";
 import { Col, Row } from "react-bootstrap";
 import Quantity from "./Quantity";
 import { Link } from "react-router-dom";
+import Button from "./Button";
+import { useDispatch, useSelector } from "react-redux";
+import { hideCart } from "../providers/cartSlice";
+import { hideOverlay } from "../providers/overlaySlice";
 
 function Cart() {
+  const dispatch = useDispatch();
+  const visibility = useSelector((state) => state?.cart?.visibility);
+  const handleCloseCart = () => {
+    dispatch(hideCart());
+    dispatch(hideOverlay());
+  };
   return (
-    <Wrapper>
+    <Wrapper className={visibility && "active"}>
       <Title>
         <span>Giỏ hàng</span>
-        <CloseOutlined />
+        <CloseOutlined onClick={handleCloseCart} />
       </Title>
       <Content>
         <Item>
@@ -22,7 +32,8 @@ function Cart() {
             </Col>
             <Col sm="8">
               <div className="name">
-                <Link to="">Smart baggy jean</Link>
+                <Link to="/">Smart baggy jean</Link>
+                <CloseOutlined />
               </div>
               <div className="price">499,000</div>
               <div className="quantity">
@@ -44,7 +55,15 @@ function Cart() {
           </Row>
         </Item>
       </Content>
-      <Bottom></Bottom>
+      <Bottom>
+        <div className="desc">
+          <span>Thành Tiền</span>
+          <span className="price">499,000</span>
+        </div>
+        <div className="btn-submit">
+          <Button black>Thanh Toán</Button>
+        </div>
+      </Bottom>
     </Wrapper>
   );
 }
@@ -53,10 +72,15 @@ const Wrapper = styled.div`
   background-color: #fff;
   position: absolute;
   top: 117px;
-  right: 0;
+  right: -100%;
   border-left: 1px solid #eee;
   border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
+  transition: all 0.4s;
+
+  &.active {
+    right: 0;
+  }
 `;
 const Title = styled.div`
   width: 100%;
@@ -69,6 +93,7 @@ const Title = styled.div`
   border-bottom: 1px solid #eee;
   svg {
     font-size: 18px;
+    cursor: pointer;
   }
 `;
 
@@ -81,6 +106,14 @@ const Content = styled.div`
     color: #000;
     text-transform: uppercase;
     font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    svg {
+      font-size: 12px;
+      cursor: pointer;
+    }
   }
   .price {
     font-size: 16px;
@@ -114,6 +147,22 @@ const Item = styled.div`
   }
 `;
 
-const Bottom = styled.div``;
+const Bottom = styled.div`
+  padding: 15px;
+  .desc {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    text-transform: uppercase;
+    .price {
+      font-weight: 400;
+    }
+  }
+  .btn-submit {
+    margin-top: 20px;
+    width: 100%;
+  }
+`;
 
 export default Cart;
