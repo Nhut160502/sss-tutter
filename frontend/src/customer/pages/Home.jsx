@@ -1,6 +1,37 @@
 import { styled } from "styled-components";
 import Slibar from "../components/Slibar";
 import {} from "@ant-design/icons";
+import Product from "../components/Product";
+import { Row, Col } from "react-bootstrap";
+import Slider from "react-slick";
+import { Link } from "react-router-dom";
+
+var settings = {
+  dots: false,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 4,
+  slidesToScroll: 1,
+  autoplay: false,
+};
+
+var settingsStyle = {
+  dots: false,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 3,
+  slidesToScroll: 1,
+  autoplay: false,
+};
+
+var settingsBanner = {
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  autoplay: false,
+};
 
 function Home() {
   return (
@@ -81,19 +112,100 @@ function Home() {
       </Shipping>
       <NewArrivals>
         <Title>
-          <h2>What new?</h2>
+          <h2>What's NEW?</h2>
         </Title>
+        <Content>
+          <Slider {...settings}>
+            <Product />
+            <Product />
+            <Product />
+            <Product />
+            <Product />
+          </Slider>
+        </Content>
       </NewArrivals>
       <BestSeller>
         <Title>
-          <h2>Best seller</h2>
+          <h2>BEST SELLER</h2>
         </Title>
+        <Category>
+          <ul>
+            <li>
+              <span>Sơ Mi</span>
+            </li>
+            <li>
+              <span>Quần</span>
+            </li>
+            <li>
+              <span>Áo thun</span>
+            </li>
+            <li>
+              <span>Áo Khoác</span>
+            </li>
+          </ul>
+        </Category>
+        <Row>
+          <Col sm="3">
+            <Product />
+          </Col>
+          <Col sm="3">
+            <Product />
+          </Col>
+          <Col sm="3">
+            <Product />
+          </Col>
+          <Col sm="3">
+            <Product />
+          </Col>
+          <Col sm="3">
+            <Product />
+          </Col>
+          <Col sm="3">
+            <Product />
+          </Col>
+          <Col sm="3">
+            <Product />
+          </Col>
+          <Col sm="3">
+            <Product />
+          </Col>
+        </Row>
       </BestSeller>
-      <Banner>Banner</Banner>
+      <Banner>
+        <Slider {...settingsBanner}>
+          <Link to="/">
+            <img
+              src="https://dashboard.leanow.vn/upload/7-2023/1690525659062.webp"
+              alt=""
+            />
+          </Link>
+          <Link to="/">
+            <img
+              src="https://dashboard.leanow.vn/upload/7-2023/1690525659062.webp"
+              alt=""
+            />
+          </Link>
+          <Link to="/">
+            <img
+              src="https://dashboard.leanow.vn/upload/7-2023/1690525659062.webp"
+              alt=""
+            />
+          </Link>
+        </Slider>
+      </Banner>
       <StylePick>
         <Title>
-          <h2>Style Pick</h2>
+          <h2>STYLE PICK!</h2>
         </Title>
+        <Content>
+          <Slider {...settingsStyle}>
+            <Product />
+            <Product />
+            <Product />
+            <Product />
+            <Product />
+          </Slider>
+        </Content>
       </StylePick>
       <Lookbook>
         <Title>
@@ -153,14 +265,49 @@ const Shipping = styled.div`
   }
 `;
 const NewArrivals = styled.div``;
-const BestSeller = styled.div``;
-const Banner = styled.div``;
+const Content = styled.div`
+  padding: 40px 80px;
+`;
+const Category = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 56px;
+  ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    li {
+      cursor: pointer;
+      text-transform: uppercase;
+      margin: 0 20px;
+      span {
+        font-size: 20px;
+        font-weight: 500;
+      }
+    }
+  }
+`;
+const BestSeller = styled.div`
+  padding: 0 16px;
+`;
+const Banner = styled.div`
+  padding-top: 13rem;
+  padding-bottom: 13rem;
+  img {
+    width: 100%;
+  }
+`;
 const StylePick = styled.div``;
 const Lookbook = styled.div``;
 const Blog = styled.div``;
 const Title = styled.div`
   padding: 4rem;
   text-align: center;
+  h2 {
+    font-size: 3rem;
+    font-weight: 700;
+  }
 `;
 
 export default Home;
