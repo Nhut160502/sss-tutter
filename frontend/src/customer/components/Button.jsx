@@ -1,8 +1,12 @@
 import { styled } from "styled-components";
 
-function Button({ children, black }) {
+function Button({ children, black, onClick }) {
   const classess = [black && "black"];
-  return <Wrapper className={classess}>{children}</Wrapper>;
+  return (
+    <Wrapper onClick={onClick} className={classess}>
+      {children}
+    </Wrapper>
+  );
 }
 
 const Wrapper = styled.button`
@@ -16,6 +20,10 @@ const Wrapper = styled.button`
   text-transform: uppercase;
   padding: 12px;
   border: 1px solid #000;
+
+  + button {
+    margin-left: 15px;
+  }
 
   &.black {
     background-color: #000;

@@ -1,24 +1,31 @@
+import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 function Product() {
   return (
     <Wrapper>
-      <Image>
-        <img
-          src="https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694710267329.webp"
-          alt=""
-        />
-        <img className="new" src="https://ssstutter.com/img/mark.png" alt="" />
-        <span>42%</span>
-      </Image>
-      <Infor>
-        <div className="top">
-          <h4 className="name">Smart tee fit</h4>
-          <h4 className="price">499,000</h4>
-        </div>
-        <div className="color">
-          <span>3 màu</span>
-        </div>
-      </Infor>
+      <Link to="/p/smart-tee---fit">
+        <Image>
+          <img
+            src="https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694710267329.webp"
+            alt=""
+          />
+          <img
+            className="new"
+            src="https://ssstutter.com/img/mark.png"
+            alt=""
+          />
+          <span>42%</span>
+        </Image>
+        <Infor>
+          <div className="top">
+            <h4 className="name">Smart tee fit</h4>
+            <h4 className="price">499,000</h4>
+          </div>
+          <div className="color">
+            <span>3 màu</span>
+          </div>
+        </Infor>
+      </Link>
     </Wrapper>
   );
 }
@@ -26,6 +33,13 @@ function Product() {
 const Wrapper = styled.div`
   width: 100%;
   padding: 10px;
+  a {
+    display: block;
+    transition: all 0.4s;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
 `;
 const Image = styled.div`
   position: relative;

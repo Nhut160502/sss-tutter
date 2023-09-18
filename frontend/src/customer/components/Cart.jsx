@@ -1,17 +1,23 @@
 import { styled } from "styled-components";
 import { CloseOutlined } from "@ant-design/icons";
-import { Col, Row } from "react-bootstrap";
-import Quantity from "./Quantity";
-import { Link } from "react-router-dom";
 import Button from "./Button";
 import { useDispatch, useSelector } from "react-redux";
 import { hideCart } from "../providers/cartSlice";
 import { hideOverlay } from "../providers/overlaySlice";
+import CartItem from "./CartItem";
+import { useNavigate } from "react-router-dom";
 
 function Cart() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const visibility = useSelector((state) => state?.cart?.visibility);
   const handleCloseCart = () => {
+    dispatch(hideCart());
+    dispatch(hideOverlay());
+  };
+
+  const handleSubmit = () => {
+    navigate("/checkout");
     dispatch(hideCart());
     dispatch(hideOverlay());
   };
@@ -21,47 +27,17 @@ function Cart() {
         <span>Giỏ hàng</span>
         <CloseOutlined onClick={handleCloseCart} />
       </Title>
-      <Content>
-        <Item>
-          <Row>
-            <Col sm="4">
-              <img
-                src="https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694736057548.webp"
-                alt=""
-              />
-            </Col>
-            <Col sm="8">
-              <div className="name">
-                <Link to="/">Smart baggy jean</Link>
-                <CloseOutlined />
-              </div>
-              <div className="price">499,000</div>
-              <div className="quantity">
-                <span className="desc">Số Lượng</span>
-                <Quantity />
-              </div>
-              <div className="color">
-                <span className="desc">Màu</span>
-                <p>Xanh da trời</p>
-              </div>
-              <div className="size">
-                <span className="desc">Size</span>
-                <div>
-                  <p>1</p>
-                  <p>499,000</p>
-                </div>
-              </div>
-            </Col>
-          </Row>
-        </Item>
-      </Content>
+      <CartItem />
+      {/* <Empty>Giỏ hàng chưa có sản phẩm</Empty> */}
       <Bottom>
         <div className="desc">
           <span>Thành Tiền</span>
           <span className="price">499,000</span>
         </div>
         <div className="btn-submit">
-          <Button black>Thanh Toán</Button>
+          <Button black onClick={handleSubmit}>
+            Thanh Toán
+          </Button>
         </div>
       </Bottom>
     </Wrapper>
@@ -97,56 +73,6 @@ const Title = styled.div`
   }
 `;
 
-const Content = styled.div`
-  padding: 16px;
-  max-height: 45vh;
-  overflow-y: auto;
-  .name {
-    font-size: 14px;
-    color: #000;
-    text-transform: uppercase;
-    font-weight: 600;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    svg {
-      font-size: 12px;
-      cursor: pointer;
-    }
-  }
-  .price {
-    font-size: 16px;
-    font-weight: 600;
-  }
-  .color,
-  .size,
-  .quantity {
-    display: flex;
-    align-items: center;
-    margin-bottom: 4px;
-  }
-  .desc {
-    min-width: 80px;
-  }
-  .size {
-    div {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-    }
-  }
-  p {
-    font-size: 14px;
-    font-weight: 500;
-  }
-`;
-const Item = styled.div`
-  img {
-    width: 100%;
-  }
-`;
-
 const Bottom = styled.div`
   padding: 15px;
   .desc {
@@ -164,5 +90,13 @@ const Bottom = styled.div`
     width: 100%;
   }
 `;
+
+// const Empty = styled.li`
+//   padding: 2.5rem;
+//   list-style: disc;
+//   font-size: 14px;
+//   line-height: 1.5;
+//   text-align: center;
+// `;
 
 export default Cart;

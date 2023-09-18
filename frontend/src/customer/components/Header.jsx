@@ -5,10 +5,9 @@ import styled from "styled-components";
 import { SearchOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import Overlay from "./Overlay";
 import Cart from "./Cart";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { hideCart, visibilityCart } from "../providers/cartSlice";
 import { hideOverlay, visibilityOverlay } from "../providers/overlaySlice";
-// import Search from "./Search";
 
 function Header() {
   const dispatch = useDispatch();
@@ -16,6 +15,8 @@ function Header() {
     dispatch(visibilityCart());
     dispatch(visibilityOverlay());
   };
+
+  const cart = useSelector((state) => state?.cart?.visibility);
 
   var settings = {
     dots: false,
@@ -53,7 +54,7 @@ function Header() {
             </Col>
             <Col sm="5">
               <Center>
-                <Link to="/about">About</Link>
+                <Link to="/about">About sss</Link>
                 <Link to="/c/for-him">Sản Phẩm</Link>
                 <Link to="/lookbook">BST</Link>
                 <Link to="/campaign">Ưu đãi</Link>
@@ -63,16 +64,21 @@ function Header() {
             </Col>
             <Col sm="4">
               <Right>
-                <SearchOutlined />
-                <ShoppingCartOutlined onClick={handleClickOpenCart} />
+                <div className="item">
+                  <SearchOutlined />
+                </div>
+                <div className="item">
+                  <ShoppingCartOutlined onClick={handleClickOpenCart} />
+                  <span className="qty">1</span>
+                </div>
               </Right>
             </Col>
           </Row>
         </Content>
-        {/* <Search />/ */}
         <Cart />
       </Wrapper>
       <Overlay
+        active={cart}
         onClick={() => {
           dispatch(hideCart());
           dispatch(hideOverlay());
@@ -85,6 +91,9 @@ const Wrapper = styled.div`
   position: relative;
   z-index: 9999;
   border-bottom: 1px solid #eee;
+  position: fixed;
+  top: 0;
+  width: 100%;
 `;
 const Notification = styled.div`
   .item {
@@ -120,6 +129,7 @@ const Left = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
   h1 {
     font-size: 48px;
     font-weight: 700;
@@ -128,8 +138,9 @@ const Left = styled.div`
 `;
 const Center = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
+  gap: 2rem;
   width: 100%;
   a {
     text-transform: uppercase;
@@ -137,7 +148,7 @@ const Center = styled.div`
     color: #000;
     font-size: 1.125rem;
     line-height: 1.75rem;
-    font-weight: 500;
+    font-weight: 400;
   }
 `;
 const Right = styled.div`
@@ -146,9 +157,23 @@ const Right = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  svg {
-    margin: 0 20px;
-    font-size: 30px;
+  .item {
+    position: relative;
+    svg {
+      margin: 0 20px;
+      font-size: 30px;
+    }
+    .qty {
+      position: absolute;
+      bottom: -6px;
+      right: 10px;
+      font-size: 8px;
+      color: #fff;
+      background: red;
+      border-radius: 50%;
+      padding-left: 0.25rem;
+      padding-right: 0.25rem;
+    }
   }
 `;
 

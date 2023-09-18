@@ -20,9 +20,10 @@ const Wrapper = styled.div`
   align-items: center;
   position: relative;
   button {
+    background-color: #fff;
     position: absolute;
     border: none;
-    background-color: transparent;
+    color: #000;
     font-size: 12px;
   }
   button {
@@ -36,11 +37,13 @@ const Wrapper = styled.div`
     }
   }
   input {
+    background-color: #fff;
     width: 100%;
     padding: 0 30px;
     text-align: center;
     height: 40px;
     border: none;
+    color: #000;
   }
 `;
 export default Quantity;

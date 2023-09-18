@@ -7,18 +7,23 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          {publicRouter.map((route) =>{
-            const Page = route.element
-            const Layout = route.layout
+          {publicRouter.map((route) => {
+            const Page = route.element;
+            const Layout = route.layout;
             return (
-             <Route key={route.path} path={route.path} element={
-              <Provider store={customerStore}>
-                  <Layout>
+              <Route
+                exact
+                key={route.path}
+                path={route.path}
+                element={
+                  <Provider store={customerStore}>
+                    <Layout>
                       <Page />
-                  </Layout>
-                </Provider>
-                }/>
-              )
+                    </Layout>
+                  </Provider>
+                }
+              />
+            );
           })}
         </Routes>
       </BrowserRouter>
