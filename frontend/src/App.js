@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { publicRouter } from "./routers/public";
 import { Provider } from "react-redux";
 import { customerStore } from "./redux/customerStore";
-import { WavyContainer } from "react-wavy-transitions";
 
 function App() {
   return (
@@ -19,9 +18,7 @@ function App() {
               element={
                 <Provider store={customerStore}>
                   <Layout>
-                    <WavyContainer>
                       <Page />
-                    </WavyContainer>
                   </Layout>
                 </Provider>
               }

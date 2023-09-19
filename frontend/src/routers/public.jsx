@@ -3,6 +3,8 @@ import Home from "../customer/pages/Home";
 import Category from "../customer/pages/Category";
 import Product from "../customer/pages/Product";
 import Checkout from "../customer/pages/Checkout";
+import About from "../customer/pages/About";
+import Lookbook from "../customer/pages/Lookbook";
 
 export const publicRouter = [
   {
@@ -23,6 +25,16 @@ export const publicRouter = [
   {
     path: "/checkout",
     element: Checkout,
+    layout: DefaultLayout,
+  },
+  {
+    path: "/about",
+    element: About,
+    layout: DefaultLayout,
+  },
+  {
+    path: "/lookbook",
+    element: Lookbook,
     layout: DefaultLayout,
   },
 ];

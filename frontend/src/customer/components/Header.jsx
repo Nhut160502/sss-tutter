@@ -49,10 +49,12 @@ function Header() {
           <Row>
             <Col sm="3">
               <Left>
-                <h1>SSSTUTTER</h1>
+                <Link to="/">
+                  <h1>SSSTUTTER</h1>
+                </Link>
               </Left>
             </Col>
-            <Col sm="5">
+            <Col sm="5" md="6">
               <Center>
                 <Link to="/about">About sss</Link>
                 <Link to="/c/for-him">Sản Phẩm</Link>
@@ -62,7 +64,7 @@ function Header() {
                 <Link to="tuyen-dung">Tuyển Dụng</Link>
               </Center>
             </Col>
-            <Col sm="4">
+            <Col sm="4" md="3">
               <Right>
                 <div className="item">
                   <SearchOutlined />
