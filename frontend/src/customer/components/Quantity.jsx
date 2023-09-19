@@ -18,30 +18,19 @@ const Wrapper = styled.div`
   width: 80px;
   display: flex;
   align-items: center;
-  position: relative;
+  gap: 1rem;
   button {
     background-color: #fff;
-    position: absolute;
     border: none;
     color: #000;
     font-size: 12px;
   }
-  button {
-    &.minus {
-      left: 0;
-      padding-left: 10px;
-    }
-    &.plus {
-      right: 0;
-      padding-right: 10px;
-    }
-  }
   input {
     background-color: #fff;
     width: 100%;
-    padding: 0 30px;
+    /* padding: 0 30px; */
     text-align: center;
-    height: 40px;
+    height: 28px;
     border: none;
     color: #000;
   }

@@ -11,7 +11,7 @@ const CartItem = () => {
       <Row>
         <Col sm="4">
           <img
-            src="https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694736057548.webp"
+            src="https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694830722829.webp"
             alt=""
           />
         </Col>
@@ -20,7 +20,9 @@ const CartItem = () => {
             <Link to="/">Smart baggy jean</Link>
             <CloseOutlined />
           </div>
-          <div className="price">499,000</div>
+          <div className="price">
+            <h3>499,000</h3>
+          </div>
           <div className="quantity">
             <span className="desc">Số Lượng</span>
             <Quantity />
@@ -31,10 +33,8 @@ const CartItem = () => {
           </div>
           <div className="size">
             <span className="desc">Size</span>
-            <div>
-              <p>1</p>
-              <p>499,000</p>
-            </div>
+            <p>1</p>
+            <p>499,000</p>
           </div>
         </Col>
       </Row>
@@ -51,7 +51,6 @@ const Wrapper = styled.div`
     font-size: 14px;
     color: #000;
     text-transform: uppercase;
-    font-weight: 600;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -62,18 +61,23 @@ const Wrapper = styled.div`
     }
   }
   .price {
-    font-size: 16px;
-    font-weight: 600;
+    h3 {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
   }
   .color,
   .size,
   .quantity {
     display: flex;
     align-items: center;
+    gap: 4rem;
     margin-bottom: 4px;
+    font-size: 14px;
   }
   .desc {
-    min-width: 80px;
+    min-width: 60px;
   }
   .size {
     div {
@@ -84,7 +88,11 @@ const Wrapper = styled.div`
   }
   p {
     font-size: 14px;
-    font-weight: 500;
+  }
+  .color {
+    p {
+      text-transform: capitalize;
+    }
   }
   img {
     width: 100%;

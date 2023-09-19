@@ -8,7 +8,7 @@ import DescShipping from "../components/DescShipping";
 import Tips from "../components/Tips";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { visibilityCart } from "../providers/cartSlice";
+import { visibleCart } from "../providers/cartSlice";
 
 const settingsToast = {
   position: "top-right",
@@ -51,7 +51,7 @@ function Product() {
       );
       return;
     }
-    dispatch(visibilityCart());
+    dispatch(visibleCart());
   };
   return (
     <Wrapper>

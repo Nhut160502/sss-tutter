@@ -12,6 +12,7 @@ import {
 import storage from "redux-persist/lib/storage";
 import cartSlice from "../customer/providers/cartSlice";
 import overlaySlice from "../customer/providers/overlaySlice";
+import voucherSlice from "../customer/providers/voucherSlice";
 
 const persistConfig = {
   key: "root",
@@ -21,6 +22,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   cart: cartSlice,
   overlay: overlaySlice,
+  voucher: voucherSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

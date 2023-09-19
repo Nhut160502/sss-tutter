@@ -14,7 +14,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-family: 'Roboto', sans-serif;
 }
-ul, h1, h2{
+ul, h1, h2, h3, h4{
   margin: 0;
   padding: 0;
 }
@@ -31,6 +31,9 @@ input{
 a{
   text-decoration: none;
     color: #000;
+}
+p{
+  margin-bottom: 0;
 }
 
 input::-webkit-outer-spin-button,
@@ -53,4 +56,21 @@ li{
 
 .slick-prev:before, .slick-next:before{
   color:red;
+}
+
+.page-appear,
+.page-enter {
+  opacity: 0;
+}
+.page-enter-active,
+.page-appear-active {
+  opacity: 1;
+  transition: opacity 1s;
+}
+.page-exit {
+  opacity: 1;
+}
+.page-exit-active {
+  opacity: 0;
+  transition: opacity 1s;
 }

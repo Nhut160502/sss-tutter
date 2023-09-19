@@ -6,7 +6,7 @@ const cartSlice = createSlice({
     visibility: false,
   },
   reducers: {
-    visibilityCart: (state) => {
+    visibleCart: (state) => {
       state.visibility = true;
     },
     hideCart: (state) => {
@@ -15,5 +15,5 @@ const cartSlice = createSlice({
   },
 });
 
-export const { visibilityCart, hideCart } = cartSlice.actions;
+export const { visibleCart, hideCart } = cartSlice.actions;
 export default cartSlice.reducer;

@@ -6,7 +6,7 @@ const overlaySlice = createSlice({
     visibility: false,
   },
   reducers: {
-    visibilityOverlay: (state) => {
+    visibleOverlay: (state) => {
       state.visibility = true;
     },
     hideOverlay: (state) => {
@@ -15,5 +15,5 @@ const overlaySlice = createSlice({
   },
 });
 
-export const { visibilityOverlay, hideOverlay } = overlaySlice.actions;
+export const { visibleOverlay, hideOverlay } = overlaySlice.actions;
 export default overlaySlice.reducer;

@@ -6,14 +6,14 @@ import { SearchOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import Overlay from "./Overlay";
 import Cart from "./Cart";
 import { useDispatch, useSelector } from "react-redux";
-import { hideCart, visibilityCart } from "../providers/cartSlice";
-import { hideOverlay, visibilityOverlay } from "../providers/overlaySlice";
+import { hideCart, visibleCart } from "../providers/cartSlice";
+import { hideOverlay, visibleOverlay } from "../providers/overlaySlice";
 
 function Header() {
   const dispatch = useDispatch();
   const handleClickOpenCart = () => {
-    dispatch(visibilityCart());
-    dispatch(visibilityOverlay());
+    dispatch(visibleCart());
+    dispatch(visibleOverlay());
   };
 
   const cart = useSelector((state) => state?.cart?.visibility);
