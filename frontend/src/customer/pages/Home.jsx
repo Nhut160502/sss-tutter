@@ -1,11 +1,11 @@
 import { styled } from "styled-components";
-import Slibar from "../components/Slibar";
 import {} from "@ant-design/icons";
 import Product from "../components/Product";
 import { Row, Col } from "react-bootstrap";
 import Slider from "react-slick";
 import { Link } from "react-router-dom";
 import Blog from "../components/Blog";
+import Banner from "../components/Banner";
 
 var settings = {
   dots: false,
@@ -34,22 +34,26 @@ var settingsBlog = {
   centerMode: true,
 };
 
-var settingsBanner = {
-  dots: true,
-  infinite: true,
-  speed: 500,
-  slidesToShow: 1,
-  slidesToScroll: 1,
-  autoplay: false,
-};
-
 function Home() {
   return (
     <Wrapper>
-      <Slibar />
+      <Slider
+        dots={false}
+        infinite={true}
+        speed={500}
+        slidesToShow={1}
+        slidesToScroll={1}
+        autoplay={false}
+      >
+        <Banner src="https://dashboard.leanow.vn/upload/9-2023/1694794642295.webp" />
+        <Banner src="https://dashboard.leanow.vn/upload/9-2023/1694160206725.webp" />
+        <Banner src="https://dashboard.leanow.vn/upload/9-2023/1694794642295.webp" />
+        <Banner src="https://dashboard.leanow.vn/upload/9-2023/1694160206725.webp" />
+      </Slider>
+
       <Shipping>
-        <ul>
-          <li>
+        <Row>
+          <Col sm="4" xs="4">
             <a href="/">
               <svg
                 width="40"
@@ -75,18 +79,20 @@ function Home() {
                   ></path>
                 </g>
               </svg>
-              <p>
+              <p className="text-xs text-sm text-md text-lg">
                 Giảm <strong>15%</strong>
               </p>
               <div class="item">
-                <p>
+                <p className="text-xs text-sm text-md text-lg">
                   Nhập mã: <strong> HELLO</strong>.
                 </p>
-                <p>ĐH ĐẦU TIÊN TỪ 699K</p>
+                <p className="text-xs text-sm text-md text-lg">
+                  ĐH ĐẦU TIÊN TỪ 699K
+                </p>
               </div>
             </a>
-          </li>
-          <li>
+          </Col>
+          <Col sm="4" xs="4">
             <a href="/">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -99,10 +105,12 @@ function Home() {
               >
                 <path d="M19,5H17V4a3,3,0,0,0-3-3H3A3,3,0,0,0,0,4V19H2.041A3.465,3.465,0,0,0,2,19.5a3.5,3.5,0,0,0,7,0,3.465,3.465,0,0,0-.041-.5h6.082a3.465,3.465,0,0,0-.041.5,3.5,3.5,0,0,0,7,0,3.465,3.465,0,0,0-.041-.5H24V10A5.006,5.006,0,0,0,19,5Zm0,2a3,3,0,0,1,3,3v1H17V7ZM7,19.5a1.5,1.5,0,0,1-3,0,1.418,1.418,0,0,1,.093-.5H6.907A1.418,1.418,0,0,1,7,19.5ZM15,17H2V4A1,1,0,0,1,3,3H14a1,1,0,0,1,1,1Zm5,2.5a1.5,1.5,0,0,1-3,0,1.41,1.41,0,0,1,.093-.5h2.814A1.41,1.41,0,0,1,20,19.5ZM17,17V13h5v4Z"></path>
               </svg>
-              <p>FREESHIP toàn quốc ĐƠN 499K</p>
+              <p className="text-xs text-sm text-md text-lg">
+                FREESHIP toàn quốc ĐƠN 499K
+              </p>
             </a>
-          </li>
-          <li>
+          </Col>
+          <Col sm="4" xs="4">
             <a href="/">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -115,10 +123,12 @@ function Home() {
               >
                 <path d="M20,16V5a3,3,0,0,1,3-3,1,1,0,0,0,0-2,5.006,5.006,0,0,0-5,5V16.279l-2.734.912a3,3,0,0,0-.156-1l-1.553-5.1A3.007,3.007,0,0,0,9.788,9.142l-6.7,2.13A3.013,3.013,0,0,0,1.129,15l1.634,5.373a2.966,2.966,0,0,0,.457.831l-2.536.845a1,1,0,0,0,.632,1.9L16.1,19.023A4.017,4.017,0,0,0,19.974,24C25.232,23.864,25.255,16.169,20,16ZM4.662,19.748,3.043,14.421A1.006,1.006,0,0,1,3.7,13.178l6.7-2.13a1,1,0,0,1,1.252.638L13.2,16.792l.011.031a1,1,0,0,1-.508,1.221l-6.888,2.3A1,1,0,0,1,4.662,19.748ZM19.974,22a2,2,0,0,1,0-4A2,2,0,0,1,19.974,22ZM10.05,14A1,1,0,0,1,9.4,15.256l-2.464.785a1,1,0,0,1-.606-1.907l2.465-.784A1,1,0,0,1,10.05,14Z"></path>
               </svg>
-              <p>ĐỔI HÀNG trong vòng 30 NGÀY</p>
+              <p className="text-xs text-sm text-md text-lg">
+                ĐỔI HÀNG trong vòng 30 NGÀY
+              </p>
             </a>
-          </li>
-        </ul>
+          </Col>
+        </Row>
       </Shipping>
       <NewArrivals>
         <Title>
@@ -181,28 +191,31 @@ function Home() {
           </Col>
         </Row>
       </BestSeller>
-      <Banner>
-        <Slider {...settingsBanner}>
-          <Link to="/">
-            <img
-              src="https://dashboard.leanow.vn/upload/7-2023/1690525659062.webp"
-              alt=""
-            />
-          </Link>
-          <Link to="/">
-            <img
-              src="https://dashboard.leanow.vn/upload/7-2023/1690525659062.webp"
-              alt=""
-            />
-          </Link>
-          <Link to="/">
-            <img
-              src="https://dashboard.leanow.vn/upload/7-2023/1690525659062.webp"
-              alt=""
-            />
-          </Link>
+
+      <div className="banner">
+        <Slider
+          dots={true}
+          infinite={true}
+          speed={500}
+          slidesToShow={1}
+          slidesToScroll={1}
+          autoplay={false}
+        >
+          <Banner
+            to="/"
+            src={"https://dashboard.leanow.vn/upload/7-2023/1690525659062.webp"}
+          />
+          <Banner
+            to="/"
+            src={"https://dashboard.leanow.vn/upload/7-2023/1690525659062.webp"}
+          />
+          <Banner
+            to="/"
+            src={"https://dashboard.leanow.vn/upload/7-2023/1690525659062.webp"}
+          />
         </Slider>
-      </Banner>
+      </div>
+
       <StylePick>
         <Title>
           <h2>STYLE PICK!</h2>
@@ -275,52 +288,54 @@ function Home() {
   );
 }
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  .banner {
+    padding-top: 13rem;
+    padding-bottom: 13rem;
+  }
+`;
 const Shipping = styled.div`
-  padding: 0.5rem;
-  ul {
-    padding: 0;
-    display: flex;
+  padding: 1rem;
+  > div {
     align-items: center;
-    justify-content: space-between;
-    li {
-      width: 100%;
+    > div {
+      & + div {
+        border-left: 1px solid #e5e7eb;
+      }
+    }
+  }
+
+  a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .item {
+    }
+    > p {
+      margin: 0 5px;
+    }
+    p {
+      margin-bottom: 0;
+      color: #9ca3af;
+    }
+    strong {
+      color: #000;
+    }
+    svg {
+      width: 40px;
+      height: 40px;
       display: flex;
       justify-content: center;
       align-items: center;
-      a {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        .item {
-        }
-        > p {
-          margin: 0 5px;
-        }
-        p {
-          margin-bottom: 0;
-          color: #9ca3af;
-        }
-        strong {
-          color: #000;
-        }
-        svg {
-          width: 40px;
-          height: 40px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-      }
-      & + li {
-        border-left: 1px solid #000;
-      }
     }
+  }
+  & + li {
+    border-left: 1px solid #000;
   }
 `;
 const NewArrivals = styled.div``;
 const Content = styled.div`
-  padding: 40px 80px;
+  padding: 0 80px 40px 0;
 `;
 const Category = styled.div`
   display: flex;
@@ -344,13 +359,6 @@ const Category = styled.div`
 `;
 const BestSeller = styled.div`
   padding: 0 16px;
-`;
-const Banner = styled.div`
-  padding-top: 13rem;
-  padding-bottom: 13rem;
-  img {
-    width: 100%;
-  }
 `;
 const StylePick = styled.div``;
 const Lookbook = styled.div`

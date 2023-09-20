@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { publicRouter } from "./routers/public";
 import { Provider } from "react-redux";
 import { customerStore } from "./redux/customerStore";
+import { privateRouter } from "./routers/private";
+import { dashboardStore } from "./redux/dashboardStore";
 
 function App() {
   return (
@@ -18,8 +20,24 @@ function App() {
               element={
                 <Provider store={customerStore}>
                   <Layout>
-                      <Page />
+                    <Page />
                   </Layout>
+                </Provider>
+              }
+            />
+          );
+        })}
+
+        {privateRouter.map((route) => {
+          const Page = route.element;
+          return (
+            <Route
+              exact
+              key={route.path}
+              path={route.path}
+              element={
+                <Provider store={dashboardStore}>
+                  <Page />
                 </Provider>
               }
             />

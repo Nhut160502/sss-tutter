@@ -1,14 +1,14 @@
 import { styled } from "styled-components";
 import Button from "../components/Button";
+import Suggest from "../components/Suggest";
+import { useNavigate } from "react-router-dom";
+import Banner from "../components/Banner";
 
 function Voucher() {
+  const navigate = useNavigate();
   return (
     <Wrapper>
-      <Banner
-        style={{
-          backgroundImage: `url("https://dashboard.leanow.vn/upload/7-2023/1688887696018.webp")`,
-        }}
-      ></Banner>
+      <Banner src="https://dashboard.leanow.vn/upload/7-2023/1688887696018.webp" />
       <Content>
         <h2>Voucher Tặng Bạn</h2>
         <span>
@@ -75,20 +75,36 @@ function Voucher() {
           />
         </div>
       </Instruct>
-      <Desc></Desc>
+      <Desc>
+        <h4>Khoan đã...</h4>
+        <h3>Vì sao lại có trang này?</h3>
+        <ul>
+          <li>
+            SSStutter hiểu rằng, những người bạn ở xa hay không thể tới cửa hàng
+            đều mong muốn có trải nghiệm tốt nhất khi mua hàng online!
+          </li>
+          <li>
+            Vì vậy, không dừng lại ở 1 trang web được thiết kế tinh gọn, thuận
+            tiện cho việc lựa chọn & mua sắm - SSStutter gửi bạn những mã
+            SSS.VOUCHER ĐỘC QUYỀN CHỈ CÓ TRÊN WEBSITE.
+          </li>
+          <li>
+            Voucher được cập nhật mỗi ngày, dành cho những người lấy sớm nhất!
+          </li>
+        </ul>
+      </Desc>
+      <Suggest />
+      <Bottom>
+        <Button onClick={() => navigate("/")} black>
+          Tiếp tục mua sắm
+        </Button>
+      </Bottom>
     </Wrapper>
   );
 }
 
 const Wrapper = styled.div``;
 
-const Banner = styled.div`
-  width: 100%;
-  padding-top: 18.5%;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-`;
 const Content = styled.div`
   padding: 2.5rem;
 
@@ -197,6 +213,37 @@ const Instruct = styled.div`
 
 const Desc = styled.div`
   padding: 2.5rem;
+  text-align: center;
+  h4 {
+    font-size: 15px;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  h3 {
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  ul {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    li {
+      font-size: 14px;
+    }
+  }
+`;
+
+const Bottom = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 80px;
+
+  button {
+    width: 33.3333%;
+  }
 `;
 
 export default Voucher;

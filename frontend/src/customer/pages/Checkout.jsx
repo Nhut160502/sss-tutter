@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import styled from "styled-components";
 import CartItem from "../components/CartItem";
@@ -6,11 +6,7 @@ import Button from "../components/Button";
 import Voucher from "../components/Voucher";
 import Overlay from "../components/Overlay";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  hideVoucher,
-  visibleVoucher,
-  removeDataVoucher,
-} from "../providers/voucherSlice";
+import { hideVoucher, visibleVoucher } from "../providers/voucherSlice";
 import { hideOverlay, visibleOverlay } from "../providers/overlaySlice";
 
 const Checkout = () => {
@@ -35,15 +31,6 @@ const Checkout = () => {
   const hanldeChangeInput = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
-
-  useEffect(() => {
-    const refresh = () => window.location.reload(true);
-    if (refresh) {
-      dispatch(hideVoucher());
-      dispatch(hideOverlay());
-      dispatch(removeDataVoucher());
-    }
-  }, [dispatch]);
 
   return (
     <Wrapper>

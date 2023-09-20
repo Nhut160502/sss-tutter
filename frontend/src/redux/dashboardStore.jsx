@@ -10,26 +10,17 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import cartSlice from "../customer/providers/cartSlice";
-import overlaySlice from "../customer/providers/overlaySlice";
-import voucherSlice from "../customer/providers/voucherSlice";
-import recruitmentSlice from "../customer/providers/recruitmentSlice";
 
 const persistConfig = {
   key: "root",
   version: 1,
   storage,
 };
-const rootReducer = combineReducers({
-  cart: cartSlice,
-  overlay: overlaySlice,
-  voucher: voucherSlice,
-  recruitment: recruitmentSlice,
-});
+const rootReducer = combineReducers({});
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-export const customerStore = configureStore({
+export const dashboardStore = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -39,4 +30,4 @@ export const customerStore = configureStore({
     }),
 });
 
-export let persistor = persistStore(customerStore);
+export let persistor = persistStore(dashboardStore);

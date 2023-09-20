@@ -47,24 +47,24 @@ function Header() {
         </Notification>
         <Content>
           <Row>
-            <Col sm="3">
+            <Col sm="3" xs="5">
               <Left>
                 <Link to="/">
                   <h1>SSSTUTTER</h1>
                 </Link>
               </Left>
             </Col>
-            <Col sm="5" md="6">
+            <Col sm="5" md="6" clas>
               <Center>
                 <Link to="/about">About sss</Link>
                 <Link to="/c/for-him">Sản Phẩm</Link>
                 <Link to="/lookbook">BST</Link>
                 <Link to="/campaign">Ưu đãi</Link>
-                <Link to="voucher">Voucher</Link>
-                <Link to="tuyen-dung">Tuyển Dụng</Link>
+                <Link to="/voucher">Voucher</Link>
+                <Link to="/tuyen-dung">Tuyển Dụng</Link>
               </Center>
             </Col>
-            <Col sm="4" md="3">
+            <Col sm="4" md="3" xs="3">
               <Right>
                 <div className="item">
                   <SearchOutlined />
@@ -151,6 +151,9 @@ const Center = styled.div`
     font-size: 1.125rem;
     line-height: 1.75rem;
     font-weight: 400;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 `;
 const Right = styled.div`
