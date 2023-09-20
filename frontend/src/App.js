@@ -30,6 +30,7 @@ function App() {
 
         {privateRouter.map((route) => {
           const Page = route.element;
+          const Layout = route.layout
           return (
             <Route
               exact
@@ -37,7 +38,9 @@ function App() {
               path={route.path}
               element={
                 <Provider store={dashboardStore}>
-                  <Page />
+                  <Layout>
+                    <Page />
+                  </Layout>
                 </Provider>
               }
             />
