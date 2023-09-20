@@ -5,6 +5,7 @@ import Product from "../customer/pages/Product";
 import Checkout from "../customer/pages/Checkout";
 import About from "../customer/pages/About";
 import Lookbook from "../customer/pages/Lookbook";
+import Voucher from "../customer/pages/Voucher";
 
 export const publicRouter = [
   {
@@ -35,6 +36,11 @@ export const publicRouter = [
   {
     path: "/lookbook",
     element: Lookbook,
+    layout: DefaultLayout,
+  },
+  {
+    path: "/voucher",
+    element: Voucher,
     layout: DefaultLayout,
   },
 ];
