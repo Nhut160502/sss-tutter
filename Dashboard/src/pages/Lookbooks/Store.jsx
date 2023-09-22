@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Form, Input, Button } from 'antd'
 import Upload from 'src/components/Upload'
 
 const Store = () => {
+  const [files, setFiles] = useState([])
   const onFinish = (values) => {
     console.log(values)
   }
   const onFinishFailed = (errorInfo) => {
     console.log(errorInfo)
   }
+  console.log(files)
 
   return (
     <Form
@@ -33,7 +35,7 @@ const Store = () => {
         name="image"
         rules={[{ required: true, message: 'Vui lòng chọn hình ảnh!' }]}
       >
-        <Upload />
+        <Upload getValue={(value) => setFiles(value)} />
       </Form.Item>
       <Form.Item
         label="Miêu Tả Ngắn"

@@ -21,8 +21,12 @@ const Top = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-bottom: 1rem;
-  a {
-    display: block;
+  button {
+    padding: 0;
+    a {
+      display: block;
+      padding: 4px 15px;
+    }
   }
 `
 

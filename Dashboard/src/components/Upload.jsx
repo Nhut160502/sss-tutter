@@ -2,17 +2,28 @@ import React, { useEffect, useState } from 'react'
 import { Button, Image, Input } from 'antd'
 import { UploadOutlined, DeleteOutlined } from '@ant-design/icons'
 import { styled } from 'styled-components'
-function Upload(props) {
+import { PropTypes } from 'prop-types'
+const Upload = (props) => {
+  const { getValue } = props
   const [fileList, setFileList] = useState([])
 
   const handleChange = (e) => {
     setFileList([])
     const arr = []
+    const files = []
     for (let i = 0; i < e.target.files.length; i++) {
       const file = e.target.files[i]
+      files.push(file)
       arr.push({ name: file.name, url: URL.createObjectURL(file), file: file })
       setFileList(arr)
     }
+    getValue && getValue(files)
+  }
+
+  const handleDelete = (url) => {
+    const files = fileList.filter((file) => file.url !== url)
+    setFileList(files)
+    getValue(files)
   }
 
   useEffect(() => {
@@ -22,7 +33,7 @@ function Upload(props) {
   }, [fileList])
   return (
     <Wrapper>
-      <Input {...props} type="file" hidden id="upload" onChange={handleChange} multiple />
+      <Input type="file" hidden id="upload" onChange={(e) => handleChange(e)} multiple />
       <Button onClick={() => document.getElementById('upload').click()}>
         <UploadOutlined />
         Upload
@@ -35,7 +46,7 @@ function Upload(props) {
                 <a href={file.url} target="_blank" rel="noopener noreferrer">
                   {file.name}
                 </a>
-                <DeleteOutlined />
+                <DeleteOutlined onClick={() => handleDelete(file.url)} />
               </li>
             ))}
           </ul>
@@ -85,5 +96,8 @@ const Wrapper = styled.div`
     }
   }
 `
+Upload.propTypes = {
+  getValue: PropTypes.func,
+}
 
 export default Upload
