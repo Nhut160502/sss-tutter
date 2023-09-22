@@ -1,8 +1,5 @@
 import React from 'react'
 import { Button, Form, Input } from 'antd'
-import { CKEditor } from '@ckeditor/ckeditor5-react'
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
-// import { TextEditor } from 'src/components/TextEditor'
 
 const Store = () => {
   const onFinish = (values) => {
@@ -30,23 +27,8 @@ const Store = () => {
       >
         <Input />
       </Form.Item>
-
-      <CKEditor
-        editor={ClassicEditor}
-        data="<p>Hello from CKEditor&nbsp;5!</p>"
-        onReady={(editor) => {
-          // You can store the "editor" and use when it is needed.
-        }}
-        onChange={(event, editor) => {
-          const data = editor.getData()
-          console.log({ data })
-        }}
-      />
-
-      {/* <TextEditor /> */}
-
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-        <Button style={{ width: 100 }} type="primary" htmlType="submit">
+        <Button style={{ width: 100 }} type="primary" htmlType="submit" className="mt-2">
           Thêm
         </Button>
       </Form.Item>
