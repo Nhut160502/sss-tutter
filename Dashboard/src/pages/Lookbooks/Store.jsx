@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Form, Input, Button } from 'antd'
 import Upload from 'src/components/Upload'
+import { configForm } from 'src/configs'
 
 const Store = () => {
   const [files, setFiles] = useState([])
@@ -10,19 +11,15 @@ const Store = () => {
   const onFinishFailed = (errorInfo) => {
     console.log(errorInfo)
   }
+
+  useEffect(() => {
+    document.title = 'THÊM BỘ SƯU TẬP'
+  }, [])
+
   console.log(files)
 
   return (
-    <Form
-      name="basic"
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
-      style={{ maxWidth: 800 }}
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      autoComplete="off"
-    >
+    <Form {...configForm} onFinish={onFinish} onFinishFailed={onFinishFailed}>
       <Form.Item
         label="Tên Bộ Sưu Tập"
         name="name"

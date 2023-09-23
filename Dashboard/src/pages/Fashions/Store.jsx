@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, Form, Input } from 'antd'
+import { configForm } from 'src/configs'
 
 const Store = () => {
   const onFinish = (values) => {
@@ -9,17 +10,12 @@ const Store = () => {
     console.log(errorInfo)
   }
 
+  useEffect(() => {
+    document.title = 'THÊM LOẠI SẢN PHẨM'
+  }, [])
+
   return (
-    <Form
-      name="basic"
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
-      style={{ maxWidth: 800 }}
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      autoComplete="off"
-    >
+    <Form {...configForm} onFinish={onFinish} onFinishFailed={onFinishFailed}>
       <Form.Item
         label="Tên Loại Sản Phẩm"
         name="name"

@@ -1,21 +1,18 @@
 import { Button, Form, Input, Select, Space } from 'antd'
-import React from 'react'
+import React, { useEffect } from 'react'
+import { configForm } from 'src/configs'
 
 const Store = () => {
   const onFinish = (value) => {
     console.log(value)
   }
   const onFinishFailed = () => {}
+
+  useEffect(() => {
+    document.title = 'THÊM DANH MỤC'
+  }, [])
   return (
-    <Form
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
-      style={{ maxWidth: 800 }}
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      autoComplete="off"
-    >
+    <Form {...configForm} onFinish={onFinish} onFinishFailed={onFinishFailed}>
       <Form.Item
         name="name"
         label="Tên Danh Mục"

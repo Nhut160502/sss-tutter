@@ -4,7 +4,7 @@ import { UploadOutlined, DeleteOutlined } from '@ant-design/icons'
 import { styled } from 'styled-components'
 import { PropTypes } from 'prop-types'
 const Upload = (props) => {
-  const { getValue } = props
+  const { getValue, id } = props
   const [fileList, setFileList] = useState([])
 
   const handleChange = (e) => {
@@ -23,7 +23,11 @@ const Upload = (props) => {
   const handleDelete = (url) => {
     const files = fileList.filter((file) => file.url !== url)
     setFileList(files)
-    getValue(files)
+    if (fileList.length <= 1) {
+      getValue([])
+    } else {
+      getValue(files)
+    }
   }
 
   useEffect(() => {
@@ -33,8 +37,8 @@ const Upload = (props) => {
   }, [fileList])
   return (
     <Wrapper>
-      <Input type="file" hidden id="upload" onChange={(e) => handleChange(e)} multiple />
-      <Button onClick={() => document.getElementById('upload').click()}>
+      <Input type="file" hidden id={`upload-${id}`} onChange={(e) => handleChange(e)} multiple />
+      <Button onClick={() => document.getElementById(`upload-${id}`).click()}>
         <UploadOutlined />
         Upload
       </Button>
@@ -98,6 +102,7 @@ const Wrapper = styled.div`
 `
 Upload.propTypes = {
   getValue: PropTypes.func,
+  id: PropTypes.string,
 }
 
 export default Upload

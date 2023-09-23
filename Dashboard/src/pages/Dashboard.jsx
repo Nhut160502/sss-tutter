@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import {
   CAvatar,
@@ -177,6 +177,10 @@ const Dashboard = () => {
       activity: 'Last week',
     },
   ]
+
+  useEffect(() => {
+    document.title = 'SSSTUTTER - DASHBOARD'
+  }, [])
 
   return (
     <>

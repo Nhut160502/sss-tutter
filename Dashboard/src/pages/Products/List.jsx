@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { styled } from 'styled-components'
 import { Table, Button } from 'antd'
 import { Link } from 'react-router-dom'
-import { data, columns } from '../../api'
+import { data, columns } from '../../configs'
 
 const List = () => {
+  useEffect(() => {
+    document.title = 'DANH SÁCH SẢN PHẨM'
+  }, [])
   return (
     <>
       <Top>

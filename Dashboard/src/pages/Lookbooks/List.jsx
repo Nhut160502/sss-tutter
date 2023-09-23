@@ -1,10 +1,13 @@
 import { Button, Table } from 'antd'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { styled } from 'styled-components'
-import { columns, data } from '../../api'
+import { columns, data } from '../../configs'
 
 const List = () => {
+  useEffect(() => {
+    document.title = 'DANH SÁCH BỘ SƯU TẬP'
+  }, [])
   return (
     <>
       <Top>
