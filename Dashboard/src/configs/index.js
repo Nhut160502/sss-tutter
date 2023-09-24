@@ -52,3 +52,17 @@ export const data = [
     address: 'London No. 2 Lake Park',
   },
 ]
+
+export const rulesNonMes = [
+  {
+    required: true,
+    message: '',
+  },
+]
+
+export const rulesMesImg = [
+  {
+    required: true,
+    message: 'Vui lòng thêm hình ảnh!',
+  },
+]

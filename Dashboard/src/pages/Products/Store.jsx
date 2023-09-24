@@ -1,22 +1,43 @@
-import { Button, Form, Input, Select } from 'antd'
-import React, { useEffect, useState } from 'react'
+import JoditEditor from 'jodit-react'
+import { Button, Form, Input, Select, Switch } from 'antd'
+import React, { Fragment, useEffect, useState } from 'react'
 import Upload from 'src/components/Upload'
-import { configForm } from 'src/configs'
+import { configForm, rulesMesImg, rulesNonMes } from 'src/configs'
 
 const Store = () => {
-  const [files, setFiles] = useState({})
+  const [thumbnail, setThumbnail] = useState({})
+  const [gallery, setGallery] = useState({})
   const [sizes, setSize] = useState([])
   const [colors, setColors] = useState([])
+  const [stock, setStock] = useState([])
+  const [price, setPrice] = useState([])
+
   const onFinish = (values) => {
-    values.files = files
+    values.thumbnail = thumbnail
+    values.gallery = gallery
+    values.stock = stock
+    values.price = price
     console.log(values)
   }
   const onFinishFailed = (err) => {
     console.log(err)
   }
 
-  const handleGetFile = (file, id) => {
-    !file.length ? delete files[id] : setFiles({ ...files, [id]: file })
+  const handleGetGallery = (files, id) => {
+    !files.length ? delete gallery[id] : setGallery({ ...gallery, [`gallery-${id}`]: files })
+  }
+
+  const handleGetThumbnail = (files, id) => {
+    !files.length
+      ? delete thumbnail[id]
+      : setThumbnail({ ...thumbnail, [`thumbnail-${id}`]: files })
+  }
+
+  const handleChangeStock = (e, id) => {
+    setStock({ ...stock, [id]: e.target.value })
+  }
+  const handleChangePrice = (e, id) => {
+    setPrice({ ...price, [id]: e.target.value })
   }
 
   useEffect(() => {
@@ -26,11 +47,7 @@ const Store = () => {
   return (
     <Form {...configForm} onFinish={onFinish} onFinishFailed={onFinishFailed}>
       {/* Category Parent */}
-      <Form.Item
-        name="categoryParent"
-        label="Loại Sản Phẩm"
-        rules={[{ required: true, message: 'Vui lòng chọn loại sản phẩm!' }]}
-      >
+      <Form.Item name="categoryParent" label="Loại Sản Phẩm" rules={rulesNonMes}>
         <Select placeholder="Chọn loại sản phẩm">
           <Select.Option value="for-him" label="For Him">
             For Him
@@ -39,22 +56,14 @@ const Store = () => {
       </Form.Item>
 
       {/* Lookbook */}
-      <Form.Item
-        label="Bộ Sưu Tập"
-        name="collection"
-        rules={[{ required: true, message: 'Vui lòng chọn bộ sưu tập' }]}
-      >
+      <Form.Item label="Bộ Sưu Tập" name="collection" rules={rulesNonMes}>
         <Select placeholder="Chọn bộ sưu tập">
           <Select.Option value="summer">Summer</Select.Option>
         </Select>
       </Form.Item>
 
       {/* category */}
-      <Form.Item
-        name="category"
-        label="Danh Mục"
-        rules={[{ required: true, message: 'Vui lòng chọn danh mục!' }]}
-      >
+      <Form.Item name="category" label="Danh Mục" rules={rulesNonMes}>
         <Select mode="multiple" placeholder="Chọn danh mục">
           <Select.Option value="for-him" label="For Him">
             For Him
@@ -67,27 +76,19 @@ const Store = () => {
       </Form.Item>
 
       {/* Name */}
-      <Form.Item
-        name="name"
-        label="Tên Sản Phẩm"
-        rules={[{ required: true, message: 'Vui lòng nhập tên sản phẩm!' }]}
-      >
-        <Input />
+      <Form.Item name="name" label="Tên Sản Phẩm" rules={rulesNonMes}>
+        <Input placeholder="Tên sản phẩm" />
       </Form.Item>
 
       {/* Color */}
-      <Form.Item
-        name="color"
-        label="Màu Sắc"
-        rules={[{ required: true, message: 'Vui lòng chọn kích thước sản phẩm!' }]}
-      >
+      <Form.Item name="color" label="Màu Sắc" rules={rulesNonMes}>
         <Select
           mode="multiple"
           placeholder="Chọn màu sắc"
           onSelect={(_, e) => setColors((pre) => [...pre, { id: e.value, name: e.children }])}
           onDeselect={(_, e) => {
             setColors(colors.filter((color) => color.id !== e.value))
-            delete files[e.value]
+            delete gallery[e.value]
           }}
         >
           <Select.Option value="den">Đen</Select.Option>
@@ -98,11 +99,7 @@ const Store = () => {
       </Form.Item>
 
       {/* Size */}
-      <Form.Item
-        name="size"
-        label="Kích Thước"
-        rules={[{ required: true, message: 'Vui lòng chọn kích thước sản phẩm!' }]}
-      >
+      <Form.Item name="size" label="Kích Thước" rules={rulesNonMes}>
         <Select
           mode="multiple"
           placeholder="Chọn kích thước"
@@ -118,42 +115,60 @@ const Store = () => {
 
       {colors.length > 0 &&
         colors.map((color) => (
-          <Form.Item
-            key={color.id}
-            label={`Hình Ảnh Sản Phẩm Màu ${color.name}`}
-            name="colorImage"
-            rules={[
-              !files[color.id]?.length && {
-                required: true,
-                message: `Vui lòng chọn hình ảnh sản phẩm!`,
-              },
-            ]}
-          >
-            <Upload id={color.id} getValue={(file) => handleGetFile(file, color.id)} />
-          </Form.Item>
+          <Fragment key={color.id}>
+            <Form.Item
+              label={`Hình Ảnh Đại Diện Màu ${color.name}`}
+              name="thumbnail"
+              rules={!thumbnail[`thumbnail-${color.id}`]?.length && rulesMesImg}
+            >
+              <Upload
+                id={`thumbnail-${color.id}`}
+                getValue={(file) => handleGetThumbnail(file, color.id)}
+              />
+            </Form.Item>
+            <Form.Item
+              label={`Hình Ảnh Chi Tiết Màu ${color.name}`}
+              name="gallery"
+              rules={!gallery[`gallery-${color.id}`]?.length && rulesMesImg}
+            >
+              <Upload
+                id={`gallery-${color.id}`}
+                multiple
+                getValue={(file) => handleGetGallery(file, color.id)}
+              />
+            </Form.Item>
+          </Fragment>
         ))}
 
       {sizes.length > 0 &&
         sizes.map(
           (size) =>
             colors.length > 0 &&
-            colors.map((color) => (
-              <Form.Item
-                key={color.id}
-                label={`Số Lượng Size ${size.name} - Màu ${color.name}`}
-                name={`stock-${color.id}`}
-                rules={[
-                  {
-                    required: true,
-                    message: `Vui lòng thêm số lượng sản phẩm!`,
-                  },
-                ]}
-              >
-                <Input type="number" name="stock[]" />
-              </Form.Item>
-            )),
+            colors.map((color) => {
+              const id = `${size.id}-${color.id}`
+              return (
+                <Fragment key={color.id}>
+                  {/* stock */}
+                  <Form.Item
+                    label={`Số Lượng Size ${size.name} - Màu ${color.name}`}
+                    name={`stock-${size.id}-${color.id}`}
+                    rules={rulesNonMes}
+                  >
+                    <Input type="number" onChange={(e) => handleChangeStock(e, id)} />
+                  </Form.Item>
+                  <Form.Item
+                    label={`Giá Size ${size.name} - Màu ${color.name}`}
+                    name={`price-${size.id}-${color.id}`}
+                    rules={rulesNonMes}
+                  >
+                    <Input onChange={(e) => handleChangePrice(e, id)} />
+                  </Form.Item>
+                </Fragment>
+              )
+            }),
         )}
 
+      {/* socical */}
       <Form.Item label="Link Shopee" name="idShopee">
         <Input />
       </Form.Item>
@@ -161,12 +176,17 @@ const Store = () => {
         <Input />
       </Form.Item>
 
-      <Form.Item
-        label="Giá Sản Phẩm"
-        name="price"
-        rules={[{ required: true, message: 'Vui lòng nhập giá sản phẩm!' }]}
-      >
+      <Form.Item label="Mã Vạch" name="barcode" rules={rulesNonMes}>
         <Input />
+      </Form.Item>
+      {/* pre order */}
+      <Form.Item label="Đặt Hàng Trước" name={'preOder'}>
+        <Switch />
+      </Form.Item>
+
+      {/* desc */}
+      <Form.Item label="Mô Tả" name="desc">
+        <JoditEditor tabIndex={12} className="jodit" />
       </Form.Item>
 
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

@@ -4,20 +4,22 @@ import { UploadOutlined, DeleteOutlined } from '@ant-design/icons'
 import { styled } from 'styled-components'
 import { PropTypes } from 'prop-types'
 const Upload = (props) => {
-  const { getValue, id } = props
+  const { getValue, id, multiple } = props
   const [fileList, setFileList] = useState([])
 
   const handleChange = (e) => {
-    setFileList([])
-    const arr = []
-    const files = []
-    for (let i = 0; i < e.target.files.length; i++) {
-      const file = e.target.files[i]
-      files.push(file)
-      arr.push({ name: file.name, url: URL.createObjectURL(file), file: file })
-      setFileList(arr)
+    if (e.target.files.length > 0) {
+      setFileList([])
+      const arr = []
+      const files = []
+      for (let i = 0; i < e.target.files.length; i++) {
+        const file = e.target.files[i]
+        files.push(file)
+        arr.push({ name: file.name, url: URL.createObjectURL(file), file: file })
+        setFileList(arr)
+      }
+      getValue && getValue(files)
     }
-    getValue && getValue(files)
   }
 
   const handleDelete = (url) => {
@@ -37,7 +39,13 @@ const Upload = (props) => {
   }, [fileList])
   return (
     <Wrapper>
-      <Input type="file" hidden id={`upload-${id}`} onChange={(e) => handleChange(e)} multiple />
+      <Input
+        type="file"
+        hidden
+        id={`upload-${id}`}
+        onChange={(e) => handleChange(e)}
+        multiple={multiple}
+      />
       <Button onClick={() => document.getElementById(`upload-${id}`).click()}>
         <UploadOutlined />
         Upload
@@ -103,6 +111,7 @@ const Wrapper = styled.div`
 Upload.propTypes = {
   getValue: PropTypes.func,
   id: PropTypes.string,
+  multiple: PropTypes.bool,
 }
 
 export default Upload
