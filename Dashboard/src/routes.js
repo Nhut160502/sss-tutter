@@ -12,6 +12,8 @@ import {
 } from './pages/Categories'
 
 import { Edit as EditProduct, List as ListProduct, Store as StoreProduct } from './pages/Products'
+import { List as ListAttribute } from './pages/Attribute'
+import StoreSize from './pages/Attribute/StoreSize'
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -52,6 +54,11 @@ const routes = [
     name: 'Chỉnh Sửa Sản Phẩm',
     element: EditProduct,
   },
+
+  // Attribute
+  { path: '/dashboard/attribute', name: 'Danh Sách Thuộc Tính', element: ListAttribute },
+  { path: '/dashboard/attribute/store/sizes', name: 'Thêm Kích Thước', element: StoreSize },
+  { path: '/dashboard/attribute/store/colors', name: 'Thêm Màu Sắc', element: StoreSize },
 ]
 
 export default routes

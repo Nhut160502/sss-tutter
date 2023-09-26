@@ -7,8 +7,11 @@ import {
   cilCursor,
   cilDescription,
   cilDrop,
+  cilHamburgerMenu,
+  cilBarChart,
   cilNotes,
-  cilPencil,
+  cibTeespring,
+  cilBook,
   cilPuzzle,
   cilSpeedometer,
   cilStar,
@@ -36,7 +39,7 @@ const _nav = [
     component: CNavItem,
     name: 'Loại Sản Phẩm',
     to: '/dashboard/loai-san-pham',
-    icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilBarChart} customClassName="nav-icon" />,
   },
 
   // Lookbook
@@ -44,7 +47,7 @@ const _nav = [
     component: CNavItem,
     name: 'Bộ Sưu Tập',
     to: '/dashboard/lookbook',
-    icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
   },
 
   // Categories
@@ -52,7 +55,7 @@ const _nav = [
     component: CNavItem,
     name: 'Danh Mục',
     to: '/dashboard/danh-muc',
-    icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilHamburgerMenu} customClassName="nav-icon" />,
   },
 
   // Product
@@ -60,24 +63,18 @@ const _nav = [
     component: CNavItem,
     name: 'Sản Phẩm',
     to: '/dashboard/san-pham',
-    icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
+    icon: <CIcon icon={cibTeespring} customClassName="nav-icon" />,
   },
 
   {
     component: CNavTitle,
-    name: 'Theme',
+    name: 'Attribute',
   },
   {
     component: CNavItem,
-    name: 'Colors',
-    to: '/dashboard/theme/colors',
+    name: 'Thuộc Tính',
+    to: '/dashboard/attribute',
     icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Typography',
-    to: '/dashboard/theme/typography',
-    icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
   },
   {
     component: CNavTitle,
