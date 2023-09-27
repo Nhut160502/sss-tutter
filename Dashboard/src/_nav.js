@@ -72,8 +72,24 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: 'Thuộc Tính',
-    to: '/dashboard/attribute',
+    name: 'Màu Sắc',
+    to: '/dashboard/colors',
+    icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Kích Thước',
+    to: '/dashboard/sizes',
+    icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavTitle,
+    name: 'Shipping',
+  },
+  {
+    component: CNavItem,
+    name: 'Order',
+    to: '/dashboard/order',
     icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
   },
   {

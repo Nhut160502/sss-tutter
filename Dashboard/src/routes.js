@@ -12,8 +12,9 @@ import {
 } from './pages/Categories'
 
 import { Edit as EditProduct, List as ListProduct, Store as StoreProduct } from './pages/Products'
-import { List as ListAttribute } from './pages/Attribute'
-import StoreSize from './pages/Attribute/StoreSize'
+import { List as ListColors, Store as StoreColor } from './pages/Colors'
+import { List as ListSizes, Store as StoreSize } from './pages/Sizes'
+import { List as ListOrder } from './pages/Order'
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -56,9 +57,17 @@ const routes = [
   },
 
   // Attribute
-  { path: '/dashboard/attribute', name: 'Danh Sách Thuộc Tính', element: ListAttribute },
-  { path: '/dashboard/attribute/store/sizes', name: 'Thêm Kích Thước', element: StoreSize },
-  { path: '/dashboard/attribute/store/colors', name: 'Thêm Màu Sắc', element: StoreSize },
+
+  //colors
+  { path: '/dashboard/colors', name: 'Danh Sách Màu Sắc', element: ListColors },
+  { path: '/dashboard/colors/store', name: 'Thêm Màu Sắc', element: StoreColor },
+
+  //sizes
+  { path: '/dashboard/sizes', name: 'Danh Sách Kích Thước', element: ListSizes },
+  { path: '/dashboard/sizes/store', name: 'Thêm Kích Thước', element: StoreSize },
+
+  //Order
+  { path: '/dashboard/order', name: 'Danh Sách Đơn Hàng', element: ListOrder },
 ]
 
 export default routes
