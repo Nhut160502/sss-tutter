@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
-import { styled } from 'styled-components'
 import { Table, Button } from 'antd'
 import { Link } from 'react-router-dom'
 import { data, columns } from '../../configs'
+import { Top } from 'src/components/Styled'
 
 const List = () => {
   useEffect(() => {
@@ -19,18 +19,5 @@ const List = () => {
     </>
   )
 }
-
-const Top = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 1rem;
-  button {
-    padding: 0;
-    a {
-      display: block;
-      padding: 4px 15px;
-    }
-  }
-`
 
 export default List

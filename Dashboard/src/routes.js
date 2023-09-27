@@ -15,6 +15,7 @@ import { Edit as EditProduct, List as ListProduct, Store as StoreProduct } from 
 import { List as ListColors, Store as StoreColor } from './pages/Colors'
 import { List as ListSizes, Store as StoreSize } from './pages/Sizes'
 import { List as ListOrder } from './pages/Order'
+import { List as ListUser } from './pages/Users'
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -68,6 +69,9 @@ const routes = [
 
   //Order
   { path: '/dashboard/order', name: 'Danh Sách Đơn Hàng', element: ListOrder },
+
+  // User
+  { path: '/dashboard/user', name: 'Danh Sách Người Dùng', element: ListUser },
 ]
 
 export default routes

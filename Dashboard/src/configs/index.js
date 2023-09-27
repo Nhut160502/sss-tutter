@@ -6,6 +6,7 @@ export const configForm = {
   style: { maxWidth: 800 },
   initialValues: { remember: true },
   autoComplete: 'off',
+  className: 'form-wrapper',
 }
 
 export const columns = [

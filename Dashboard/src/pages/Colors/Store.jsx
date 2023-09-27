@@ -1,14 +1,16 @@
 import React, { useState } from 'react'
 import { configForm, rulesNonMes } from 'src/configs'
 import { Button, ColorPicker, Form, Input } from 'antd'
-
-function Store() {
+import { PropTypes } from 'prop-types'
+function Store(props) {
+  const { handleFinish } = props
   const [values, setValues] = useState({})
 
   const onFinish = (value) => {
     const { r, g, b, a } = value?.code?.metaColor
     const colorCode = `${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${Math.round(a)}`
     setValues({ name: value.name, code: colorCode })
+    handleFinish && console.log(value)
   }
 
   const onFinishFailed = () => {}
@@ -30,5 +32,9 @@ function Store() {
       </Form.Item>
     </Form>
   )
+}
+
+Store.propTypes = {
+  handleFinish: PropTypes.func,
 }
 export default Store

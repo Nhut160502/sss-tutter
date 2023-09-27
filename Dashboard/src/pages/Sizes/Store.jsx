@@ -2,13 +2,15 @@ import React from 'react'
 import { Select, Form, Input, Button } from 'antd'
 import { useState } from 'react'
 import { configForm, rulesNonMes } from 'src/configs'
+import { PropTypes } from 'prop-types'
 
-function Store() {
+function Store(props) {
+  const { handleFinish } = props
   const [values, setValues] = useState({})
   const onFinish = (value) => {
     setValues({ name: value.name, type: value.type })
+    handleFinish && console.log(values)
   }
-  console.log(values)
   return (
     <Form {...configForm} onFinish={onFinish}>
       <>
@@ -30,6 +32,10 @@ function Store() {
       </>
     </Form>
   )
+}
+
+Store.propTypes = {
+  handleFinish: PropTypes.func,
 }
 
 export default Store

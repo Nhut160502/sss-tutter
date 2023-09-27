@@ -1,10 +1,14 @@
 import React, { useEffect } from 'react'
 import { Button, Form, Input } from 'antd'
 import { configForm } from 'src/configs'
+import { PropTypes } from 'prop-types'
 
-const Store = () => {
+const Store = (props) => {
+  const { handleFinish } = props
+
   const onFinish = (values) => {
-    console.log(values)
+    // console.log(values)
+    handleFinish && console.log(values)
   }
   const onFinishFailed = (errorInfo) => {
     console.log(errorInfo)
@@ -30,6 +34,10 @@ const Store = () => {
       </Form.Item>
     </Form>
   )
+}
+
+Store.propTypes = {
+  handleFinish: PropTypes.func,
 }
 
 export default Store
