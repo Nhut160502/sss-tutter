@@ -1,45 +1,49 @@
-import { Collections } from "../models/index.js";
+import { Categories } from "../models/index.js";
 
 const index = async (req, res) => {
-  await Collections.find()
+  await Categories.find()
     .then((data) => res.status(200).json({ success: true, data: data }))
-    .catch((err) => res.status(500).json({ success: false, error: err }));
+    .catch((error) => res.status(500).json({ success: false, error: error }));
 };
 
 const store = async (req, res) => {
-  const data = new Collections({
+  const data = new Categories({
     name: req.body.name,
+    type: req.body.typeId,
   });
   await data
     .save()
     .then((data) => res.status(200).json({ success: true, data: data }))
-    .catch((err) => res.status(500).json({ success: false, error: err }));
+    .catch((error) => res.status(500).json({ success: false, error: error }));
 };
 
 const show = async (req, res) => {
-  await Collections.findOne({ slug: req.params.slug })
+  await Categories.findOne({ slug: req.params.slug })
     .then((data) => res.status(200).json({ success: true, data: data }))
-    .catch((err) => res.status(500).json({ success: false, error: err }));
+    .catch((error) => res.status(500).json({ success: false, error: error }));
 };
 
 const update = async (req, res) => {
-  Collections.findById(req.params.id)
+  await Categories.findById(req.params.id)
     .then(async (data) => {
       data.name = req.body.name;
+      data.type = req.body?.typeId;
       data.status = req.body.status;
       data.updatedAt = Date.now();
       await data
         .save()
         .then((data) => res.status(200).json({ success: true, data: data }))
-        .catch((err) => res.status(500).json({ success: false, error: err }));
+        .catch((error) =>
+          res.status(500).json({ success: false, error: error })
+        );
     })
-    .catch((err) => res.status(500).json({ success: false, error: err }));
+    .catch((error) => res.status(500).json({ success: false, error: error }));
 };
 
 const destroy = async (req, res) => {
-  Collections.findByIdAndDelete(req.params.id)
+  await Categories.findByIdAndDelete(req.params.id)
     .then(() => res.status(200).json({ success: true }))
-    .catch((err) => res.status(500).json({ success: false, error: err }));
+    .catch((error) => res.status(500).json({ success: false, error: error }));
 };
 
 export { index, store, show, update, destroy };

@@ -24,11 +24,9 @@ const store = async (req, res) => {
 };
 
 const show = async (req, res) => {
-  const data = await Types.find({ slug: req.params.slug });
-  if (data.length) {
-    return res.status(200).json({ success: true, data: data });
-  }
-  return res.status(500).json({ success: false, message: "Not found" });
+  await Types.findOne({ slug: req.params.slug })
+    .then((data) => res.status(200).json({ success: true, data: data }))
+    .catch((err) => res.status(500).json({ success: false, error: err }));
 };
 
 const update = async (req, res) => {

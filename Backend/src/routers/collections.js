@@ -1,7 +1,11 @@
 import express from "express";
 import { collectionControllers } from "../controllers/index.js";
 
-const collectionRouter = express.Router();
-collectionRouter.get("/", collectionControllers.index);
+const collectionsRouter = express.Router();
+collectionsRouter.get("/", collectionControllers.index);
+collectionsRouter.get("/:slug", collectionControllers.show);
+collectionsRouter.post("/", collectionControllers.store);
+collectionsRouter.put("/:id", collectionControllers.update);
+collectionsRouter.delete("/:id", collectionControllers.destroy);
 
-export default collectionRouter;
+export default collectionsRouter;
