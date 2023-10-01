@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Table } from 'antd'
 import { Link } from 'react-router-dom'
-import { columns, data } from 'src/configs'
+import { columns, data } from 'src/configs/table'
 import { Top } from 'src/components/Styled'
 
 function List() {

@@ -24,20 +24,17 @@ const show = async (req, res) => {
 };
 
 const update = async (req, res) => {
-  await Categories.findById(req.params.id)
-    .then(async (data) => {
-      data.name = req.body.name;
-      data.type = req.body?.typeId;
-      data.status = req.body.status;
-      data.updatedAt = Date.now();
-      await data
-        .save()
-        .then((data) => res.status(200).json({ success: true, data: data }))
-        .catch((error) =>
-          res.status(500).json({ success: false, error: error })
-        );
-    })
-    .catch((error) => res.status(500).json({ success: false, error: error }));
+  try {
+    const data = await Categories.findById(req.params.id);
+    data.name = req.body.name;
+    data.type = req.body?.typeId;
+    data.status = req.body.status;
+    data.updatedAt = Date.now();
+    await data.save();
+    res.status(200).json({ success: true, data: data });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error });
+  }
 };
 
 const destroy = async (req, res) => {

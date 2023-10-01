@@ -10,6 +10,8 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Page404 from './pages/Page404'
 import Page500 from './pages/Page500'
+import { useDispatch } from 'react-redux'
+import axiosInterceptor from './ultils/interceptors'
 
 const loading = (
   <div className="pt-3 text-center">
@@ -18,6 +20,8 @@ const loading = (
 )
 
 const App = () => {
+  const dispatch = useDispatch()
+  axiosInterceptor(dispatch)
   return (
     <HashRouter>
       <Suspense fallback={loading}>

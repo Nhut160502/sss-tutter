@@ -1,4 +1,4 @@
-import { Colors, Products } from "../models/index.js";
+import { Colors } from "../models/index.js";
 
 const index = async (req, res) => {
   await Colors.find()
@@ -21,21 +21,19 @@ const show = async (req, res) => {
     .catch((error) => res.status(500).json({ success: false, error: error }));
 };
 const update = async (req, res) => {
-  await Products.findById(req.params.id).then(async (data) => {
+  try {
+    const data = await Colors.findById(req.params.id);
     data.name = req.body.name;
     data.code = req.body.code;
-    await data
-      .save()
-      .then((data) => res.status(200).json({ success: true, data: data }))
-      .catch((error) => res.status(500).json({ success: false, error: error }));
-  });
+    await data.save();
+    res.status(200).json({ success: true, data: data });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error });
+  }
 };
 const destroy = async (req, res) => {
-  await Products.findOneAndDelete(req.params.id)
-    .then(async () => {
-      const data = await Products.find();
-      res.status(200).json({ success: true, data: data });
-    })
+  await Colors.findOneAndDelete(req.params.id)
+    .then(async () => res.status(200).json({ success: true }))
     .catch((error) => res.status(500).json({ success: false, error: error }));
 };
 

@@ -17,18 +17,16 @@ import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from '@coreui/icons'
 import { Breadcrumb } from './index'
 import { HeaderDropdown } from './index'
 import { logo } from 'src/assets/brand/logo'
+import { setSidebar } from 'src/providers/sidebarSlice'
 
 const AppHeader = () => {
   const dispatch = useDispatch()
-  const sidebarShow = useSelector((state) => state.sidebarShow)
+  const sidebar = useSelector((state) => state?.sidebar?.visibility)
 
   return (
     <CHeader position="sticky" className="mb-4">
       <CContainer fluid>
-        <CHeaderToggler
-          className="ps-1"
-          onClick={() => dispatch({ type: 'set', sidebarShow: !sidebarShow })}
-        >
+        <CHeaderToggler className="ps-1" onClick={() => dispatch(setSidebar(!sidebar))}>
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
         <CHeaderBrand className="mx-auto d-md-none" to="/">

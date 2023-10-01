@@ -1,9 +1,14 @@
 import React from 'react'
 import { Content, Sidebar, Footer, Header } from '../components/index'
-
+import Loading from 'src/components/Loading'
+import { ToastContainer } from 'react-toastify'
+import Modal from 'src/components/Modal'
 const DefaultLayout = () => {
   return (
-    <div>
+    <>
+      <Modal />
+      <ToastContainer />
+      <Loading />
       <Sidebar />
       <div className="wrapper d-flex flex-column min-vh-100 bg-light">
         <Header />
@@ -12,7 +17,7 @@ const DefaultLayout = () => {
         </div>
         <Footer />
       </div>
-    </div>
+    </>
   )
 }
 

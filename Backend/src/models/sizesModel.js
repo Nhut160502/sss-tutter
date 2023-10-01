@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const sizesModel = new Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true, lowercase: true },
     slug: { type: String, slug: "name" },
     type: { type: Number, required: true },
     status: { type: Boolean, default: true },

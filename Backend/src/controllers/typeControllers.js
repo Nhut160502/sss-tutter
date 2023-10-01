@@ -2,8 +2,8 @@ import { Types } from "../models/index.js";
 
 const index = async (req, res) => {
   await Types.find()
-    .then((data) => res.status(200).json(data))
-    .catch((err) => res.status(500).json(err));
+    .then((data) => res.status(200).json({ success: true, data: data }))
+    .catch((err) => res.status(500).json({ success: false, error: err }));
 };
 
 const store = async (req, res) => {
@@ -30,27 +30,23 @@ const show = async (req, res) => {
 };
 
 const update = async (req, res) => {
-  await Types.findById(req.params.id)
-    .then(async (type) => {
-      type.name = req.body.name;
-      type.status = req.body.status;
-      await type
-        .save()
-        .then((data) => res.status(200).json({ success: true, data: data }))
-        .catch((err) => res.status(500).json({ success: false, error: err }));
-    })
-    .catch((err) => res.status(500).json({ success: false, error: err }));
+  try {
+    const data = await Types.findById(req.params.id);
+
+    data.name = req.body.name;
+    data.status = req.body.status;
+
+    await data.save();
+    res.status(200).json({ success: true, data: data });
+  } catch (error) {
+    res.status(500).json({ success: false, error: err });
+  }
 };
 
 const destroy = async (req, res) => {
-  await Types.findById(req.params.id)
-    .then((data) => {
-      data
-        .deleteOne()
-        .then(() => res.status(200).json({ success: true }))
-        .catch((err) => res.status(500).json({ success: false, error: err }));
-    })
-    .catch((err) => res.status(500).json({ success: false, error: err }));
+  await Types.findByIdAndDelete(req.params.id)
+    .then(() => res.status(200).json({ success: true }))
+    .catch((error) => res.status(500).json({ success: false, error: error }));
 };
 
 export { index, show, store, update, destroy };

@@ -2,7 +2,7 @@ import { Segmented } from 'antd'
 import { Table } from 'antd/es'
 import React, { useEffect, useState } from 'react'
 import { Top } from 'src/components/Styled'
-import { columns, data } from 'src/configs'
+import { columns, data } from 'src/configs/table'
 
 function List() {
   const [type, setType] = useState('waiting')

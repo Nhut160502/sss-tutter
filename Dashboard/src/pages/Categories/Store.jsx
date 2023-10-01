@@ -1,6 +1,6 @@
 import { Button, Form, Input, Select, Space } from 'antd'
 import React, { useEffect } from 'react'
-import { configForm } from 'src/configs'
+import { configForm } from 'src/configs/form'
 import { PropTypes } from 'prop-types'
 
 const Store = (props) => {
@@ -13,6 +13,7 @@ const Store = (props) => {
   useEffect(() => {
     document.title = 'THÊM DANH MỤC'
   }, [])
+
   return (
     <Form {...configForm} onFinish={onFinish} onFinishFailed={onFinishFailed}>
       <Form.Item

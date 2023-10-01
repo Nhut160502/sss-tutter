@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { configForm, rulesNonMes } from 'src/configs'
+import { configForm, rulesNonMes } from 'src/configs/form'
 import { Button, ColorPicker, Form, Input } from 'antd'
 import { PropTypes } from 'prop-types'
 function Store(props) {

@@ -14,18 +14,19 @@ import { sygnet } from 'src/assets/brand/sygnet'
 
 // sidebar nav config
 import navigation from '../_nav'
+import { setSidebar } from 'src/providers/sidebarSlice'
 
 const Sidebar = () => {
   const dispatch = useDispatch()
   const unfoldable = useSelector((state) => state.sidebarUnfoldable)
-  const sidebarShow = useSelector((state) => state.sidebarShow)
+  const sidebar = useSelector((state) => state?.sidebar?.visibility)
   return (
     <CSidebar
       position="fixed"
       unfoldable={unfoldable}
-      visible={sidebarShow}
+      visible={sidebar}
       onVisibleChange={(visible) => {
-        dispatch({ type: 'set', sidebarShow: visible })
+        dispatch(setSidebar(visible))
       }}
     >
       <CSidebarBrand className="d-none d-md-flex" to="/">

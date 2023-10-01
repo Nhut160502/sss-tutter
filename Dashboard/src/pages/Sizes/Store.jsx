@@ -1,7 +1,7 @@
 import React from 'react'
 import { Select, Form, Input, Button } from 'antd'
 import { useState } from 'react'
-import { configForm, rulesNonMes } from 'src/configs'
+import { configForm, rulesNonMes } from 'src/configs/form'
 import { PropTypes } from 'prop-types'
 
 function Store(props) {

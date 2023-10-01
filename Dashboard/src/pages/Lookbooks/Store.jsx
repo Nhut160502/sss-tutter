@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Form, Input, Button } from 'antd'
 import Upload from 'src/components/Upload'
-import { configForm } from 'src/configs'
+import { configForm } from 'src/configs/form'
 import { PropTypes } from 'prop-types'
 
 const Store = (props) => {

@@ -1,12 +1,23 @@
-import React, { useEffect } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { Button, Table } from 'antd'
 import { Link } from 'react-router-dom'
-import { columns, data } from '../../configs'
+import { clt } from '../../configs/table'
 import { Top } from 'src/components/Styled'
+import { getTypes } from 'src/services/type'
+import { useDispatch } from 'react-redux'
+import { openModal } from 'src/providers/modalSlice'
+import Modal from 'src/components/Modal'
 const List = () => {
+  const [list, setList] = useState([])
+  const dispatch = useDispatch()
   useEffect(() => {
     document.title = 'DANH SÁCH LOẠI SẢN PHẨM'
+    getTypes().then((res) => setList(res.data))
   }, [])
+  clt.handleDelete = () => {
+    dispatch(openModal())
+  }
+
   return (
     <>
       <Top>
@@ -14,9 +25,14 @@ const List = () => {
           <Link to="/dashboard/loai-san-pham/store">Thêm Mới</Link>
         </Button>
       </Top>
-      <Table dataSource={data} columns={columns} />
+      <Table
+        columns={clt.columns}
+        rowKey="_id"
+        dataSource={list}
+        onChange={() => console.log('Change')}
+      />
     </>
   )
 }
 
-export default List
+export default memo(List)
