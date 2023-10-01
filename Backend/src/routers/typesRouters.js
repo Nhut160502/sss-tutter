@@ -7,6 +7,6 @@ typesRouters.get("/", typeControllers.index);
 typesRouters.get("/:slug", typeControllers.show);
 typesRouters.post("/", typeControllers.store);
 typesRouters.put("/:id", typeControllers.update);
-typesRouters.delete("/:id", typeControllers.destroy);
+typesRouters.delete("/delete", typeControllers.destroy);
 
 export default typesRouters;

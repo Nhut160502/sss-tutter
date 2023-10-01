@@ -7,3 +7,8 @@ export const getTypes = async () => {
 export const storeType = async (data) => {
   return axios.post('/type', data)
 }
+
+export const deleteType = (data) => {
+  console.log(data)
+  return axios.delete(`/type/delete`, data)
+}

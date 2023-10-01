@@ -44,8 +44,12 @@ const update = async (req, res) => {
 };
 
 const destroy = async (req, res) => {
-  await Types.findByIdAndDelete(req.params.id)
-    .then(() => res.status(200).json({ success: true }))
+  console.log(req.body);
+  await Types.findByIdAndDelete(req.body.id)
+    .then(async() => {
+      const data = await Types.find();
+      res.status(200).json({ success: true, data: data })
+    })
     .catch((error) => res.status(500).json({ success: false, error: error }));
 };
 

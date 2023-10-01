@@ -5,10 +5,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { hiddenModal } from 'src/providers/modalSlice'
 
 const Modal = (props) => {
-  const { handleOk } = props
+  const { handleOk, confirmLoading } = props
   const dispatch = useDispatch()
   const modal = useSelector((state) => state?.modal)
-  console.log(modal)
   const handleCancel = () => {
     dispatch(hiddenModal())
   }
@@ -28,6 +27,7 @@ const Modal = (props) => {
       open={modal?.open}
       onOk={handleOk}
       onCancel={handleCancel}
+      confirmLoading={confirmLoading}
     >
       <p>Bạn muốn xóa dử liệu này? Dử liệu sau khi xóa sẽ không thể khôi phục được!</p>
     </ModaCustom>
@@ -36,6 +36,7 @@ const Modal = (props) => {
 
 Modal.propTypes = {
   handleOk: PropTypes.func,
+  confirmLoading: PropTypes.bool,
 }
 
 export default Modal
