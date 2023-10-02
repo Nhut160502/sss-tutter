@@ -22,13 +22,22 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
 
   // Fashion
+
+  {
+    path: '/dashboard/loai-san-pham',
+    name: 'Danh Sách Loại Sản Phẩm',
+    element: ListFashion,
+  },
+  {
+    path: '/dashboard/loai-san-pham/store',
+    name: 'Thêm Loại Sản Phẩm',
+    element: StoreFashion,
+  },
   {
     path: '/dashboard/loai-san-pham/edit/:slugFashion',
     name: 'Chỉnh Sửa Loại Sản Phẩm',
     element: EditFashion,
   },
-  { path: '/dashboard/loai-san-pham', name: 'Danh Sách Loại Sản Phẩm', element: ListFashion },
-  { path: '/dashboard/loai-san-pham/store', name: 'Thêm Loại Sản Phẩm', element: StoreFashion },
 
   // Lookbook
   { path: '/dashboard/lookbook', name: 'Danh Sách Bộ Sưu Tập', element: ListLookbook },

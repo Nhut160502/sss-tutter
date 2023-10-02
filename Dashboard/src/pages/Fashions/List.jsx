@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useState } from 'react'
 import { Button, Space, Table } from 'antd'
 import { Link } from 'react-router-dom'
-// import { clt } from '../../configs/table'
+import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
 import { Top } from 'src/components/Styled'
 import { deleteType, getTypes } from 'src/services/type'
 import { useDispatch, useSelector } from 'react-redux'
@@ -14,7 +14,9 @@ const List = () => {
       title: 'Tên',
       dataIndex: 'name',
       key: '_id',
-      render: (name, record) => <Link to={record.slug}>{name}</Link>,
+      render: (name, record) => (
+        <Link to={`/dashboard/loai-san-pham/edit/${record.slug}`}>{name}</Link>
+      ),
     },
     {
       title: 'Ngày Thêm',
@@ -22,11 +24,22 @@ const List = () => {
       key: 'createdAt',
     },
     {
+      title: 'Trạng Thái',
+      dataIndex: 'status',
+      key: '_id',
+      render: (status) =>
+        status === true ? (
+          <EyeOutlined className="icon-active" />
+        ) : (
+          <EyeInvisibleOutlined className="icon-active" />
+        ),
+    },
+    {
       title: 'Action',
       key: '_id',
       render: (_, record) => (
         <Space size="middle">
-          <Link to={record.slug}>Sửa</Link>
+          <Link to={`/dashboard/loai-san-pham/edit/${record.slug}`}>Sửa</Link>
           <Link
             onClick={() => {
               dispatch(openModal())
@@ -43,20 +56,21 @@ const List = () => {
   const [list, setList] = useState([])
   const [id, setId] = useState()
   const loading = useSelector((state) => state?.loading)
+
   useEffect(() => {
     document.title = 'DANH SÁCH LOẠI SẢN PHẨM'
-    getTypes().then((res) => setList(res.data))
+    const fetchData = async () => {
+      await getTypes().then((res) => setList(res.data))
+    }
+    fetchData()
   }, [])
 
   const handleOk = async () => {
-    var formData = new FormData()
-    formData.append('id', id)
-    console.log(formData)
-    // await deleteType(formData).then((res) => {
-    //   dispatch(hiddenModal())
-    //   setList(res.data)
-    //   Toast.success('Dử liệu đã được xoá thành công!')
-    // })
+    await deleteType(id).then((res) => {
+      dispatch(hiddenModal())
+      setList(res.data)
+      Toast.success('Dử liệu đã được xoá thành công!')
+    })
   }
 
   return (
@@ -67,12 +81,7 @@ const List = () => {
           <Link to="/dashboard/loai-san-pham/store">Thêm Mới</Link>
         </Button>
       </Top>
-      <Table
-        columns={columns}
-        rowKey="_id"
-        dataSource={list}
-        onChange={() => console.log('Change')}
-      />
+      <Table columns={columns} dataSource={list} onChange={(e) => console.log(e)} />
     </>
   )
 }

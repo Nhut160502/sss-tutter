@@ -44,13 +44,19 @@ const update = async (req, res) => {
 };
 
 const destroy = async (req, res) => {
-  console.log(req.body);
-  await Types.findByIdAndDelete(req.body.id)
-    .then(async() => {
-      const data = await Types.find();
-      res.status(200).json({ success: true, data: data })
-    })
-    .catch((error) => res.status(500).json({ success: false, error: error }));
+  try {
+    await Types.findByIdAndDelete(req.params.id);
+    const data = await Types.find();
+    res.status(200).json({ success: true, data: data });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error });
+  }
+  // await Types.findByIdAndDelete(req.params.id)
+  //   .then(async () => {
+  //     const data = await Types.find();
+  //     res.status(200).json({ success: true, data: data });
+  //   })
+  //   .catch((error) => res.status(500).json({ success: false, error: error }));
 };
 
 export { index, show, store, update, destroy };

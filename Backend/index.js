@@ -5,8 +5,10 @@ import session from "express-session";
 import { connectDatabase } from "./src/configs/database.js";
 import router from "./src/routers/index.js";
 import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
 
 const app = express();
+app.use(bodyParser.json());
 
 // config session
 app.use(

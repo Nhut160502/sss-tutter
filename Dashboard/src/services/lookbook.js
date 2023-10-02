@@ -1,0 +1,17 @@
+import axios from 'src/ultils/axios'
+
+export const getLookbooks = () => {
+  return axios.get('/collection')
+}
+
+export const storeLookbook = (data) => {
+  return axios.post('/collection', data)
+}
+
+export const deleteLookbook = (id) => {
+  return axios.delete(`/collection/${id}`)
+}
+
+export const showLookbook = (slug) => {
+  return axios.get(`/collection/${slug}`)
+}

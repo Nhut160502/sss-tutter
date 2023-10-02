@@ -1,27 +1,31 @@
 import React, { useEffect, useState } from 'react'
 import { Form, Input, Button } from 'antd'
 import Upload from 'src/components/Upload'
-import { configForm } from 'src/configs/form'
+import { configForm, rulesMesImg } from 'src/configs/form'
 import { PropTypes } from 'prop-types'
+import { storeLookbook } from 'src/services/lookbook'
 
 const Store = (props) => {
   const { handleFinish } = props
-  const [files, setFiles] = useState([])
-  const onFinish = (values) => {
+  const [file, setFile] = useState({})
+  const onFinish = async (values) => {
     handleFinish && console.log(values)
-  }
-  const onFinishFailed = (errorInfo) => {
-    console.log(errorInfo)
+    values.file = file
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('name', values.name)
+    formData.append('desc', values.desc)
+    await storeLookbook(formData).then((res) => {
+      res.success && (window.location = '/#/dashboard/lookbook')
+    })
   }
 
   useEffect(() => {
     document.title = 'THÊM BỘ SƯU TẬP'
   }, [])
 
-  console.log(files)
-
   return (
-    <Form {...configForm} onFinish={onFinish} onFinishFailed={onFinishFailed}>
+    <Form {...configForm} onFinish={onFinish}>
       <Form.Item
         label="Tên Bộ Sưu Tập"
         name="name"
@@ -29,12 +33,8 @@ const Store = (props) => {
       >
         <Input />
       </Form.Item>
-      <Form.Item
-        label="Hình Ảnh"
-        name="image"
-        rules={[{ required: true, message: 'Vui lòng chọn hình ảnh!' }]}
-      >
-        <Upload getValue={(value) => setFiles(value)} />
+      <Form.Item label="Hình Ảnh" name="file" rules={!file && rulesMesImg}>
+        <Upload getValue={(file) => setFile(file[0])} />
       </Form.Item>
       <Form.Item
         label="Miêu Tả Ngắn"

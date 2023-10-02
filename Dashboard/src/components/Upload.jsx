@@ -4,7 +4,7 @@ import { UploadOutlined, DeleteOutlined } from '@ant-design/icons'
 import { styled } from 'styled-components'
 import { PropTypes } from 'prop-types'
 const Upload = (props) => {
-  const { getValue, id, multiple } = props
+  const { getValue, id, multiple, data } = props
   const [fileList, setFileList] = useState([])
 
   const handleChange = (e) => {
@@ -71,8 +71,23 @@ const Upload = (props) => {
           </ul>
         </>
       )}
+      {data?.length > 0 && fileList?.length <= 0 && (
+        <ul className="preview-image">
+          {data.map((url) => (
+            <li key={url}>
+              <Image src={url} />
+            </li>
+          ))}
+        </ul>
+      )}
     </Wrapper>
   )
+}
+Upload.propTypes = {
+  getValue: PropTypes.func,
+  id: PropTypes.string,
+  multiple: PropTypes.bool,
+  data: PropTypes.array,
 }
 
 const Wrapper = styled.div`
@@ -108,10 +123,5 @@ const Wrapper = styled.div`
     }
   }
 `
-Upload.propTypes = {
-  getValue: PropTypes.func,
-  id: PropTypes.string,
-  multiple: PropTypes.bool,
-}
 
 export default Upload
