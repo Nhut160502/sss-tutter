@@ -15,3 +15,7 @@ export const deleteLookbook = (id) => {
 export const showLookbook = (slug) => {
   return axios.get(`/collection/${slug}`)
 }
+
+export const updateLookbook = (data) => {
+  return axios.put(`/collection`, data)
+}

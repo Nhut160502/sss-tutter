@@ -26,7 +26,7 @@ const show = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const data = await Sizes.findById(req.params.id);
+    const data = await Sizes.findById(req.body.id);
 
     data.name = req.body.name;
     data.type = req.body.type;
@@ -42,7 +42,10 @@ const update = async (req, res) => {
 
 const destroy = async (req, res) => {
   await Sizes.findByIdAndDelete(req.params.id)
-    .then(() => res.status(200).json({ success: true }))
+    .then(async () => {
+      const data = await Sizes.find();
+      res.status(200).json({ success: true, data: data });
+    })
     .catch((error) => res.status(500).json({ success: false, error: error }));
 };
 

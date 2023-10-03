@@ -1,21 +1,45 @@
-import { Button, Form, Input, Select, Space } from 'antd'
-import React, { useEffect } from 'react'
+import { Button, Form, Input, Select } from 'antd'
+import React, { useEffect, useState } from 'react'
 import { configForm } from 'src/configs/form'
 import { PropTypes } from 'prop-types'
+import { getTypes } from 'src/services/type'
+import Toast from 'src/components/Toast'
+import { useNavigate } from 'react-router-dom'
+import { storeCategory } from 'src/services/category'
 
 const Store = (props) => {
   const { handleFinish } = props
-  const onFinish = (value) => {
-    handleFinish && console.log(value)
+  const navigate = useNavigate()
+  const [data, setData] = useState([])
+
+  const onFinish = async (values) => {
+    handleFinish && console.log(values)
+    await storeCategory(values)
+      .then((res) => {
+        Toast.success('Store category successfully!')
+        navigate(-1)
+      })
+      .catch((err) => Toast.error('Error!'))
   }
-  const onFinishFailed = () => {}
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getTypes()
+        .then((res) => setData(res.data))
+        .catch(() => {
+          Toast.error('Eorror!')
+          navigate(-1)
+        })
+    }
+    fetchData()
+  }, [navigate])
 
   useEffect(() => {
     document.title = 'THÊM DANH MỤC'
   }, [])
 
   return (
-    <Form {...configForm} onFinish={onFinish} onFinishFailed={onFinishFailed}>
+    <Form {...configForm} onFinish={onFinish}>
       <Form.Item
         name="name"
         label="Tên Danh Mục"
@@ -24,43 +48,16 @@ const Store = (props) => {
         <Input />
       </Form.Item>
       <Form.Item
-        name="categoryParent"
+        name="typeId"
         label="Loại Sản Phẩm"
         rules={[{ required: true, message: 'Vui lòng chọn loại sản phẩm!' }]}
       >
-        <Select mode="multiple" placeholder="Chọn loại sản phẩm" optionLabelProp="label">
-          <Select.Option value="china" label="China">
-            <Space>
-              <span role="img" aria-label="China">
-                🇨🇳
-              </span>
-              China (中国)
-            </Space>
-          </Select.Option>
-          <Select.Option value="usa" label="USA">
-            <Space>
-              <span role="img" aria-label="USA">
-                🇺🇸
-              </span>
-              USA (美国)
-            </Space>
-          </Select.Option>
-          <Select.Option value="japan" label="Japan">
-            <Space>
-              <span role="img" aria-label="Japan">
-                🇯🇵
-              </span>
-              Japan (日本)
-            </Space>
-          </Select.Option>
-          <Select.Option value="korea" label="Korea">
-            <Space>
-              <span role="img" aria-label="Korea">
-                🇰🇷
-              </span>
-              Korea (韩国)
-            </Space>
-          </Select.Option>
+        <Select placeholder="Chọn loại sản phẩm" optionLabelProp="label">
+          {data?.map((item) => (
+            <Select.Option key={item._id} value={item._id} label={item.name}>
+              {item.name}
+            </Select.Option>
+          ))}
         </Select>
       </Form.Item>
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

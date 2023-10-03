@@ -11,15 +11,34 @@ import { Store as StoreFashion } from '../Fashions'
 import { Store as StoreColor } from '../Colors'
 import { Store as StoreSize } from '../Sizes'
 import { CloseOutlined } from '@ant-design/icons'
+import Toast from 'src/components/Toast'
+import { getTypes } from 'src/services/type'
+import { getLookbooks } from 'src/services/lookbook'
+import { findTypeCategory, getCategories } from 'src/services/category'
+import { getColors } from 'src/services/color'
+import { getSizes } from 'src/services/size'
 
 const Store = () => {
+  const [types, setTypes] = useState([])
+  const [lookbooks, setLookbooks] = useState([])
+  const [categories, setCategories] = useState([])
+  const [colors, setColors] = useState([])
+  const [sizes, setSizes] = useState([])
   const [thumbnail, setThumbnail] = useState({})
   const [gallery, setGallery] = useState({})
-  const [sizes, setSize] = useState([])
-  const [colors, setColors] = useState([])
+  const [sizesData, setSizeData] = useState([])
+  const [colorData, setColorData] = useState([])
   const [stock, setStock] = useState([])
   const [price, setPrice] = useState([])
   const [openForm, setOpenForm] = useState('')
+
+  const [defaultValue, setDefaultValue] = useState({
+    type: null,
+    lookbook: null,
+    category: null,
+    colors: null,
+    sizes: null,
+  })
 
   const onFinish = (values) => {
     values.thumbnail = thumbnail
@@ -27,9 +46,6 @@ const Store = () => {
     values.stock = stock
     values.price = price
     console.log(values)
-  }
-  const onFinishFailed = (err) => {
-    console.log(err)
   }
 
   const handleGetGallery = (files, id) => {
@@ -55,6 +71,66 @@ const Store = () => {
   const handleCloseFormAdd = () => {
     setOpenForm('')
   }
+  const handleFinishFormAdd = (res) => {
+    setOpenForm('')
+    switch (openForm) {
+      case 'sizes':
+        setSizes((pre) => [...pre, { value: res.data._id, label: res.data.name }])
+        setDefaultValue({ ...defaultValue, sizes: res.data._id })
+        break
+      default:
+        break
+    }
+  }
+
+  console.log(defaultValue.sizes)
+
+  const handleChangeTypes = async (id) => {
+    setCategories([])
+    try {
+      const { data } = await findTypeCategory(id)
+      data.map((item) => setCategories((pre) => [...pre, { value: item._id, label: item.name }]))
+    } catch (error) {
+      Toast.error('Error!')
+    }
+  }
+
+  const setData = (data, setData) => {
+    data.map((item) => setData((pre) => [...pre, { value: item._id, label: item.name }]))
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const resType = await getTypes()
+        const resLook = await getLookbooks()
+        const resCat = await getCategories()
+        const resColor = await getColors()
+        const resSize = await getSizes()
+        if (
+          resType.success &&
+          resLook.success &&
+          resCat.success &&
+          resColor.success &&
+          resSize.success
+        ) {
+          setTypes([])
+          setLookbooks([])
+          setCategories([])
+          setColors([])
+          setSizes([])
+
+          setData(resType.data, setTypes)
+          setData(resLook.data, setLookbooks)
+          setData(resColor.data, setColors)
+          setData(resSize.data, setSizes)
+        }
+      } catch (error) {
+        Toast.error('Error')
+      }
+    }
+    fetchData()
+  }, [])
 
   useEffect(() => {
     document.title = 'THÊM SẢN PHẨM'
@@ -69,53 +145,44 @@ const Store = () => {
             placeholder="Chọn"
             onChange={handleChangeFormAdd}
             value={openForm === '' ? null : openForm}
-          >
-            <Select.Option value="type">Loại Sản Phẩm</Select.Option>
-            <Select.Option value="lookbook">Bộ Sưu Tập</Select.Option>
-            <Select.Option value="category">Danh Mục</Select.Option>
-            <Select.Option value="colors">Màu Sắc</Select.Option>
-            <Select.Option value="sizes">Kích Thước</Select.Option>
-          </Select>
+            options={[
+              { value: 'type', label: 'Loại Sản Phẩm' },
+              { value: 'lookbook', label: 'Bộ Sưu Tập' },
+              { value: 'category', label: 'Danh Mục' },
+              { value: 'colors', label: 'Màu Sắc' },
+              { value: 'sizes', label: 'Kích Thước' },
+            ]}
+          />
         </Container>
       </Top>
       <FormAdd className={openForm !== '' && 'show'}>
         <Content>
           <CloseOutlined className="btn-close" onClick={handleCloseFormAdd} />
-          {openForm === 'type' && <StoreFashion handleFinish={(val) => console.log(val)} />}
-          {openForm === 'lookbook' && <StoreLookbook handleFinish={(val) => console.log(val)} />}
-          {openForm === 'category' && <StoreCategory handleFinish={(val) => console.log(val)} />}
-          {openForm === 'colors' && <StoreColor handleFinish={(val) => console.log(val)} />}
-          {openForm === 'sizes' && <StoreSize handleFinish={(val) => console.log(val)} />}
+          {openForm === 'type' && <StoreFashion handleFinish={handleFinishFormAdd} />}
+          {openForm === 'lookbook' && <StoreLookbook handleFinish={handleFinishFormAdd} />}
+          {openForm === 'category' && <StoreCategory handleFinish={handleFinishFormAdd} />}
+          {openForm === 'colors' && <StoreColor handleFinish={handleFinishFormAdd} />}
+          {openForm === 'sizes' && <StoreSize handleFinish={handleFinishFormAdd} />}
         </Content>
       </FormAdd>
-      <Form {...configForm} onFinish={onFinish} onFinishFailed={onFinishFailed}>
+      <Form {...configForm} onFinish={onFinish}>
         {/* Category Parent */}
         <Form.Item name="categoryParent" label="Loại Sản Phẩm" rules={rulesNonMes}>
-          <Select placeholder="Chọn loại sản phẩm">
-            <Select.Option value="for-him" label="For Him">
-              For Him
-            </Select.Option>
-          </Select>
+          <Select placeholder="Chọn loại sản phẩm" options={types} onChange={handleChangeTypes} />
         </Form.Item>
 
         {/* Lookbook */}
         <Form.Item label="Bộ Sưu Tập" name="collection" rules={rulesNonMes}>
-          <Select placeholder="Chọn bộ sưu tập">
-            <Select.Option value="summer">Summer</Select.Option>
-          </Select>
+          <Select placeholder="Chọn bộ sưu tập" options={lookbooks} />
         </Form.Item>
 
         {/* category */}
-        <Form.Item name="category" label="Danh Mục" rules={rulesNonMes}>
-          <Select mode="multiple" placeholder="Chọn danh mục">
-            <Select.Option value="for-him" label="For Him">
-              For Him
-            </Select.Option>
-
-            <Select.Option value="for-her" label="For Him">
-              For Her
-            </Select.Option>
-          </Select>
+        <Form.Item
+          name={(categories.length > 0 && 'category') || null}
+          label="Danh Mục"
+          rules={rulesNonMes}
+        >
+          <Select placeholder="Chọn danh mục" options={categories || []} onClear />
         </Form.Item>
 
         {/* Name */}
@@ -128,36 +195,39 @@ const Store = () => {
           <Select
             mode="multiple"
             placeholder="Chọn màu sắc"
-            onSelect={(_, e) => setColors((pre) => [...pre, { id: e.value, name: e.children }])}
+            onSelect={(_, e) => setColorData((pre) => [...pre, { id: e.value, name: e.children }])}
             onDeselect={(_, e) => {
-              setColors(colors.filter((color) => color.id !== e.value))
+              setColorData(colorData.filter((color) => color.id !== e.value))
               delete gallery[e.value]
             }}
-          >
-            <Select.Option value="den">Đen</Select.Option>
-            <Select.Option value="trang">Trắng</Select.Option>
-            <Select.Option value="do">Đỏ</Select.Option>
-            <Select.Option value="vang">Vàng</Select.Option>
-          </Select>
+            options={colors}
+          />
         </Form.Item>
 
         {/* Size */}
         <Form.Item name="size" label="Kích Thước" rules={rulesNonMes}>
-          <Select
-            mode="multiple"
-            placeholder="Chọn kích thước"
-            onSelect={(_, e) => setSize((pre) => [...pre, { id: e.value, name: e.children }])}
-            onDeselect={(_, e) => setSize(sizes.filter((item) => item.id !== e.value))}
-          >
-            <Select.Option value="s">S</Select.Option>
-            <Select.Option value="m">M</Select.Option>
-            <Select.Option value="l">L</Select.Option>
-            <Select.Option value="xl">XL</Select.Option>
-          </Select>
+          {(!defaultValue.sizes && (
+            <Select
+              mode="multiple"
+              placeholder="Chọn kích thước"
+              onSelect={(_, e) => setSizeData((pre) => [...pre, { id: e.value, name: e.children }])}
+              onDeselect={(_, e) => setSizeData(sizesData.filter((item) => item.id !== e.value))}
+              options={sizes}
+            />
+          )) || (
+            <Select
+              mode="multiple"
+              placeholder="Chọn kích thước"
+              onSelect={(_, e) => setSizeData((pre) => [...pre, { id: e.value, name: e.children }])}
+              onDeselect={(_, e) => setSizeData(sizesData.filter((item) => item.id !== e.value))}
+              options={sizes}
+              defaultValue={defaultValue.sizes}
+            />
+          )}
         </Form.Item>
 
-        {colors.length > 0 &&
-          colors.map((color) => (
+        {colorData.length > 0 &&
+          colorData.map((color) => (
             <Fragment key={color.id}>
               <Form.Item
                 label={`Hình Ảnh Đại Diện Màu ${color.name}`}
@@ -183,11 +253,11 @@ const Store = () => {
             </Fragment>
           ))}
 
-        {sizes.length > 0 &&
-          sizes.map(
+        {sizesData.length > 0 &&
+          sizesData.map(
             (size) =>
-              colors.length > 0 &&
-              colors.map((color) => {
+              colorData.length > 0 &&
+              colorData.map((color) => {
                 const id = `${size.id}-${color.id}`
                 return (
                   <Fragment key={color.id}>

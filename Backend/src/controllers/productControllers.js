@@ -2,7 +2,12 @@ import { Products } from "../models/index.js";
 
 const index = async (req, res) => {
   await Products.find()
-    .then((data) => res.status(200).json({ success: true, data: data }))
+    .then((data) => {
+      data.map((item) => {
+        console.log(item);
+      });
+      res.status(200).json({ success: true, data: data });
+    })
     .catch((error) => res.status(500).json({ success: false, error: error }));
 };
 

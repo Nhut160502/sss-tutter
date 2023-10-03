@@ -10,7 +10,6 @@ const Store = (props) => {
   const [file, setFile] = useState({})
   const onFinish = async (values) => {
     handleFinish && console.log(values)
-    values.file = file
     const formData = new FormData()
     formData.append('file', file)
     formData.append('name', values.name)

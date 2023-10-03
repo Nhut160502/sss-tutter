@@ -10,7 +10,6 @@ const productsModel = new Schema(
     collections: {
       type: Schema.Types.ObjectId,
       ref: "Collections",
-      required: true,
     },
     category: {
       type: Schema.Types.ObjectId,

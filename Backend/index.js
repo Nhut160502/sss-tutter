@@ -8,7 +8,15 @@ import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 
 const app = express();
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+// static file
+app.use(express.static("./public"));
+// connect database
+connectDatabase();
 
 // config session
 app.use(
@@ -19,18 +27,6 @@ app.use(
     cookie: { maxAge: 1000 * 60 * 60 * 24 },
   })
 );
-
-// use json
-app.use(express.json());
-app.use(cookieParser());
-// use cors
-app.use(cors());
-
-// static file
-app.use(express.static("./public"));
-
-// connect database
-connectDatabase();
 
 // config router
 app.use("/api", router);

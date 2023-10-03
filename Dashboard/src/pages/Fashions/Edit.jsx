@@ -1,6 +1,7 @@
 import { Button, Form, Input, Switch } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import Toast from 'src/components/Toast'
 import { showType, updateType } from 'src/services/type'
 
 const Edit = () => {
@@ -10,13 +11,16 @@ const Edit = () => {
   const [data, setData] = useState({})
 
   const onFinish = async (values) => {
-    console.log(values)
-    await updateType(data._id, values).then((res) => {
-      console.log(res)
-      if (res.success) {
-        navigate('/dashboard/loai-san-pham')
-      }
-    })
+    await updateType(data._id, values)
+      .then((res) => {
+        if (!res.success) {
+          Toast.error('Error')
+        } else {
+          Toast.success('Update type product successfully!')
+          navigate('/dashboard/loai-san-pham')
+        }
+      })
+      .catch((err) => Toast.error('Error'))
   }
 
   const fetchData = async (slug) => {

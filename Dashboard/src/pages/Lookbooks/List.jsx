@@ -15,6 +15,7 @@ const List = () => {
       title: 'Tên',
       dataIndex: 'name',
       key: '_id',
+      sorter: (a, b) => a.name.length - b.name.length,
       render: (name, record) => <Link to={`/dashboard/lookbook/edit/${record.slug}`}>{name}</Link>,
     },
     {

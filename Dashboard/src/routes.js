@@ -12,8 +12,8 @@ import {
 } from './pages/Categories'
 
 import { Edit as EditProduct, List as ListProduct, Store as StoreProduct } from './pages/Products'
-import { List as ListColors, Store as StoreColor } from './pages/Colors'
-import { List as ListSizes, Store as StoreSize } from './pages/Sizes'
+import { List as ListColors, Store as StoreColor, Edit as EditColor } from './pages/Colors'
+import { List as ListSizes, Store as StoreSize, Edit as EditSize } from './pages/Sizes'
 import { List as ListOrder } from './pages/Order'
 import { List as ListUser } from './pages/Users'
 
@@ -52,7 +52,7 @@ const routes = [
   { path: '/dashboard/danh-muc', name: 'Danh Sách Danh Mục', element: ListCategories },
   { path: '/dashboard/danh-muc/store', name: 'Thêm Danh Mục', element: StoreCategories },
   {
-    path: '/dashboard/danh-muc/edit/:slugCategories',
+    path: '/dashboard/danh-muc/edit/:slugCategory',
     name: 'Chỉnh Sửa Danh Mục',
     element: EditCategories,
   },
@@ -71,10 +71,12 @@ const routes = [
   //colors
   { path: '/dashboard/colors', name: 'Danh Sách Màu Sắc', element: ListColors },
   { path: '/dashboard/colors/store', name: 'Thêm Màu Sắc', element: StoreColor },
+  { path: '/dashboard/colors/edit/:slugColor', name: 'Chỉnh Sửa Màu Sắc', element: EditColor },
 
   //sizes
   { path: '/dashboard/sizes', name: 'Danh Sách Kích Thước', element: ListSizes },
   { path: '/dashboard/sizes/store', name: 'Thêm Kích Thước', element: StoreSize },
+  { path: '/dashboard/sizes/edit/:slugSize', name: 'Chỉnh Sửa Kích Thước', element: EditSize },
 
   //Order
   { path: '/dashboard/order', name: 'Danh Sách Đơn Hàng', element: ListOrder },

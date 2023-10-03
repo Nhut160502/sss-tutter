@@ -22,7 +22,7 @@ const show = async (req, res) => {
 };
 const update = async (req, res) => {
   try {
-    const data = await Colors.findById(req.params.id);
+    const data = await Colors.findById(req.body.id);
     data.name = req.body.name;
     data.code = req.body.code;
     await data.save();
@@ -33,8 +33,11 @@ const update = async (req, res) => {
 };
 const destroy = async (req, res) => {
   await Colors.findOneAndDelete(req.params.id)
-    .then(async () => res.status(200).json({ success: true }))
-    .catch((error) => res.status(500).json({ success: false, error: error }));
+    .then(async () => {
+      const data = await Colors.find();
+      res.status(200).json({ success: true, data: data });
+    })
+    .catch((error) => res.status(500).json({ error: error }));
 };
 
 export { index, store, show, update, destroy };

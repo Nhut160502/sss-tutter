@@ -1,25 +1,44 @@
 import React from 'react'
 import { Select, Form, Input, Button } from 'antd'
-import { useState } from 'react'
 import { configForm, rulesNonMes } from 'src/configs/form'
 import { PropTypes } from 'prop-types'
+import { storeSize } from 'src/services/size'
+import Toast from 'src/components/Toast'
+import { useNavigate } from 'react-router-dom'
 
 function Store(props) {
   const { handleFinish } = props
-  const [values, setValues] = useState({})
-  const onFinish = (value) => {
-    setValues({ name: value.name, type: value.type })
-    handleFinish && console.log(values)
+  const navigate = useNavigate()
+
+  const onFinish = async (values) => {
+    try {
+      await storeSize(values).then((res) => {
+        if (res.success) {
+          Toast.success('Store size successfully!')
+          if (props) {
+            handleFinish(res)
+          } else {
+            navigate('/dashboard/sizes')
+          }
+        }
+      })
+    } catch (error) {
+      Toast.error('Store size error!')
+    }
   }
+
   return (
     <Form {...configForm} onFinish={onFinish}>
       <>
         <Form.Item label="Loại Kích Thước" name="type" rules={rulesNonMes}>
-          <Select placeholder="Chọn loại kích thước">
-            <Select.Option value="1">Size Áo</Select.Option>
-            <Select.Option value="2">Size Quần</Select.Option>
-            <Select.Option value="3">Khác</Select.Option>
-          </Select>
+          <Select
+            placeholder="Chọn loại kích thước"
+            options={[
+              { value: '1', label: 'Size Áo' },
+              { value: '2', label: 'Size Quần' },
+              { value: '3', label: 'Khác' },
+            ]}
+          />
         </Form.Item>
         <Form.Item label="Tên kích thước" name="name" rules={rulesNonMes}>
           <Input />

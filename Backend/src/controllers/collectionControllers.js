@@ -5,7 +5,6 @@ const index = async (req, res) => {
   await Collections.find()
     .then((data) => {
       data.map((item) => {
-        console.log(item);
         item.thumbnail = `http://${process.env.HOST}:${process.env.PORT}/media/${item.thumbnail}`;
       });
       res.status(200).json({ success: true, data: data });
@@ -15,7 +14,6 @@ const index = async (req, res) => {
 
 const store = async (req, res) => {
   const file = req.file;
-  console.log(file);
   try {
     const data = new Collections({
       name: req.body.name,
@@ -46,14 +44,24 @@ const show = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const data = await Collections.findById(req.params.id);
+    const data = await Collections.findById(req.body.id);
     data.name = req.body.name;
+    data.desc = req.body.desc;
     data.status = req.body.status;
     data.updatedAt = Date.now();
+    if (req.file && data.thumbnail) {
+      var filePath = `public\\media\\${data.thumbnail}`;
+      fs.unlinkSync(filePath);
+      data.thumbnail = req.file.filename;
+    }
     await data.save();
     res.status(200).json({ success: true, data: data });
   } catch (error) {
-    res.status(500).json({ success: false, error: err });
+    if (req.file) {
+      var filePath = `public\\media\\${req.file.filename}`;
+      fs.unlinkSync(filePath);
+    }
+    res.status(500).json({ success: false, error: error });
   }
 };
 
@@ -65,6 +73,10 @@ const destroy = async (req, res) => {
         fs.unlinkSync(filePath);
       }
       const data = await Collections.find();
+      data.map(
+        (item) =>
+          (item.thumbnail = `http://${process.env.HOST}:${process.env.PORT}/media/${item.thumbnail}`)
+      );
       res.status(200).json({ success: true, data: data });
     })
     .catch((err) => res.status(500).json({ success: false, error: err }));

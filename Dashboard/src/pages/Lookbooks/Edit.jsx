@@ -1,16 +1,35 @@
 import { Button, Form, Input, Switch } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import Toast from 'src/components/Toast'
 import Upload from 'src/components/Upload'
-import { configForm, rulesMesImg } from 'src/configs/form'
-import { showLookbook } from 'src/services/lookbook'
+import { configForm } from 'src/configs/form'
+import { showLookbook, updateLookbook } from 'src/services/lookbook'
 
 const Edit = () => {
   const { slugLookbook } = useParams()
+  const navigate = useNavigate()
   const [file, setFile] = useState()
   const [data, setData] = useState({})
-  const [checked, setChecked] = useState(true)
-  const onFinish = () => {}
+  const [checked, setChecked] = useState()
+  const onFinish = async (values) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('name', values.name)
+    formData.append('id', data._id)
+    formData.append('desc', values.desc)
+    formData.append('status', values.status)
+    await updateLookbook(formData)
+      .then((res) => {
+        if (!res.success) {
+          Toast.error('Error')
+        } else {
+          Toast.success('Update collection successfully!')
+          navigate('/dashboard/lookbook')
+        }
+      })
+      .catch((err) => Toast.error('Error'))
+  }
 
   useEffect(() => {
     showLookbook(slugLookbook).then((res) => {
@@ -44,7 +63,7 @@ const Edit = () => {
       >
         <Input />
       </Form.Item>
-      <Form.Item label="Hình Ảnh" name="file" rules={!file && rulesMesImg}>
+      <Form.Item label="Hình Ảnh" name="file">
         <Upload getValue={(file) => setFile(file[0])} data={[data.thumbnail]} />
       </Form.Item>
       <Form.Item
@@ -64,7 +83,7 @@ const Edit = () => {
       </Form.Item>
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
         <Button style={{ width: 100 }} type="primary" htmlType="submit" className="mt-2">
-          Thêm
+          Cập Nhật
         </Button>
       </Form.Item>
     </Form>
