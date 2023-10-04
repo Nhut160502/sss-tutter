@@ -3,14 +3,21 @@ import { Button, Form, Input } from 'antd'
 import { configForm } from 'src/configs/form'
 import { PropTypes } from 'prop-types'
 import { storeType } from 'src/services/type'
+import Toast from 'src/components/Toast'
+import { useNavigate } from 'react-router-dom'
 
 const Store = (props) => {
   const { handleFinish } = props
+  const navigate = useNavigate()
   const onFinish = (values) => {
     handleFinish && console.log(values)
     storeType({ name: values.name }).then((res) => {
       if (res) {
-        window.location = '/#/dashboard/loai-san-pham'
+        if (res.success) {
+          Toast.success('Store tpye product successfully!')
+          if (props) return handleFinish(res)
+          navigate('/dashboard/loai-san-pham')
+        }
         return
       }
     })

@@ -48,3 +48,9 @@ button{
 .ant-select-dropdown{
   z-index: 9999;
 }
+
+.ant-form-item-label{
+  label{
+    text-transform: capitalize !important;
+  }
+}

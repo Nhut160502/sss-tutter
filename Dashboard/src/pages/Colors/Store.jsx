@@ -15,8 +15,11 @@ function Store(props) {
     values.code = colorCode
     await storeColor(values)
       .then((res) => {
-        Toast.success('Store color successfully!')
-        navigate(-1)
+        if (res.success) {
+          Toast.success('Store color successfully!')
+          if (props) return handleFinish(res)
+          navigate('/dashboard/colors')
+        }
       })
       .catch(() => Toast.error('Error!'))
   }

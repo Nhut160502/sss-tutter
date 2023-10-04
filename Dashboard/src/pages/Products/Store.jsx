@@ -27,63 +27,109 @@ const Store = () => {
   const [thumbnail, setThumbnail] = useState({})
   const [gallery, setGallery] = useState({})
   const [sizesData, setSizeData] = useState([])
-  const [colorData, setColorData] = useState([])
-  const [stock, setStock] = useState([])
-  const [price, setPrice] = useState([])
+  const [colorThumbnail, setColorThumbnail] = useState([])
+
   const [openForm, setOpenForm] = useState('')
 
-  const [defaultValue, setDefaultValue] = useState({
-    type: null,
-    lookbook: null,
-    category: null,
-    colors: null,
-    sizes: null,
-  })
+  const [media, setMedia] = useState([])
+  const [stock, setStock] = useState([])
 
   const onFinish = (values) => {
     values.thumbnail = thumbnail
     values.gallery = gallery
     values.stock = stock
-    values.price = price
     console.log(values)
   }
 
-  const handleGetGallery = (files, id) => {
-    !files.length ? delete gallery[id] : setGallery({ ...gallery, [`gallery-${id}`]: files })
+  const handleGetGallery = (files, colorId) => {
+    if (files.length) {
+      const check = media.some((item) => item.colorId === colorId)
+      if (check) {
+        const arr = media
+        arr.find((item) => item.colorId && (item.gallery = files))
+      } else {
+        setMedia((pre) => [...pre, { colorId: colorId, gallery: files }])
+      }
+    } else {
+      const arr = media
+      arr.find((item) => item.colorId && (item.gallery = []))
+      // setMedia(media.filter((item) => item.colorId !== colorId))
+    }
+    // !files.length ? delete gallery[id] : setGallery({ ...gallery, [`gallery-${id}`]: files })
   }
 
-  const handleGetThumbnail = (files, id) => {
-    !files.length
-      ? delete thumbnail[id]
-      : setThumbnail({ ...thumbnail, [`thumbnail-${id}`]: files })
+  const handleGetThumbnail = (files, colorId) => {
+    console.log(files)
+    if (files.length) {
+      const check = media.some((item) => item.colorId === colorId)
+      console.log(check)
+      if (check) {
+        const arr = media
+        arr.find((item) => item.colorId && (item.thumbnail = files))
+      } else {
+        setMedia((pre) => [...pre, { colorId: colorId, thumbnail: files }])
+      }
+    } else {
+      const arr = media
+      arr.find((item) => item.colorId && (item.thumbnail = []))
+    }
+
+    // !files.length
+    //   ? delete thumbnail[colorId]
+    //   : setThumbnail({ ...thumbnail, [`thumbnail-${colorId}`]: files })
   }
 
-  const handleChangeStock = (e, id) => {
-    setStock({ ...stock, [id]: e.target.value })
-  }
-  const handleChangePrice = (e, id) => {
-    setPrice({ ...price, [id]: e.target.value })
+  console.log(media)
+
+  const handleChangeStock = (qty, sizeId, colorId) => {
+    const check = stock.some((item) => item.sizeId === sizeId && item.colorId === colorId)
+    if (check) {
+      const arr = stock
+      arr.find((item) => item.sizeId === sizeId && item.colorId === colorId && (item.qty = qty))
+    } else {
+      setStock((pre) => [...pre, { colorId: colorId, sizeId: sizeId, qty: qty }])
+    }
   }
 
-  const handleChangeFormAdd = (value) => {
-    setOpenForm(value)
+  const handleDeselectColor = (value) => {
+    setStock(stock.filter((item) => item.colorId !== value))
+    setColorThumbnail(colorThumbnail.filter((color) => color.id !== value))
+    delete gallery[value]
   }
-  const handleCloseFormAdd = () => {
-    setOpenForm('')
+
+  const handleDeselectSize = (value) => {
+    setStock(stock.filter((item) => item.sizeId !== value))
+    setSizeData(sizesData.filter((item) => item.id !== value))
   }
+
   const handleFinishFormAdd = (res) => {
     setOpenForm('')
+    const arr = []
     switch (openForm) {
+      case 'type':
+        arr.push({ value: res.data._id, label: res.data.name }, ...types)
+        setTypes(arr)
+        break
+      case 'lookbook':
+        arr.push({ value: res.data._id, label: res.data.name }, ...lookbooks)
+        setLookbooks(arr)
+        break
+      case 'category':
+        arr.push({ value: res.data._id, label: res.data.name }, ...categories)
+        setCategories(arr)
+        break
+      case 'colors':
+        arr.push({ value: res.data._id, label: res.data.name }, ...colors)
+        setColors(arr)
+        break
       case 'sizes':
-        setSizes((pre) => [...pre, { value: res.data._id, label: res.data.name }])
-        setDefaultValue({ ...defaultValue, sizes: res.data._id })
+        arr.push({ value: res.data._id, label: res.data.name }, ...sizes)
+        setSizes(arr)
         break
       default:
         break
     }
   }
-
-  console.log(defaultValue.sizes)
 
   const handleChangeTypes = async (id) => {
     setCategories([])
@@ -95,12 +141,12 @@ const Store = () => {
     }
   }
 
-  const setData = (data, setData) => {
-    data.map((item) => setData((pre) => [...pre, { value: item._id, label: item.name }]))
-  }
-
   useEffect(() => {
     const fetchData = async () => {
+      const setData = (data, setData) => {
+        data.map((item) => setData((pre) => [...pre, { value: item._id, label: item.name }]))
+      }
+
       try {
         const resType = await getTypes()
         const resLook = await getLookbooks()
@@ -143,7 +189,7 @@ const Store = () => {
           <label>Thêm Mới:</label>
           <Select
             placeholder="Chọn"
-            onChange={handleChangeFormAdd}
+            onChange={(value) => setOpenForm(value)}
             value={openForm === '' ? null : openForm}
             options={[
               { value: 'type', label: 'Loại Sản Phẩm' },
@@ -157,7 +203,7 @@ const Store = () => {
       </Top>
       <FormAdd className={openForm !== '' && 'show'}>
         <Content>
-          <CloseOutlined className="btn-close" onClick={handleCloseFormAdd} />
+          <CloseOutlined className="btn-close" onClick={() => setOpenForm('')} />
           {openForm === 'type' && <StoreFashion handleFinish={handleFinishFormAdd} />}
           {openForm === 'lookbook' && <StoreLookbook handleFinish={handleFinishFormAdd} />}
           {openForm === 'category' && <StoreCategory handleFinish={handleFinishFormAdd} />}
@@ -170,12 +216,10 @@ const Store = () => {
         <Form.Item name="categoryParent" label="Loại Sản Phẩm" rules={rulesNonMes}>
           <Select placeholder="Chọn loại sản phẩm" options={types} onChange={handleChangeTypes} />
         </Form.Item>
-
         {/* Lookbook */}
         <Form.Item label="Bộ Sưu Tập" name="collection" rules={rulesNonMes}>
           <Select placeholder="Chọn bộ sưu tập" options={lookbooks} />
         </Form.Item>
-
         {/* category */}
         <Form.Item
           name={(categories.length > 0 && 'category') || null}
@@ -184,50 +228,34 @@ const Store = () => {
         >
           <Select placeholder="Chọn danh mục" options={categories || []} onClear />
         </Form.Item>
-
         {/* Name */}
         <Form.Item name="name" label="Tên Sản Phẩm" rules={rulesNonMes}>
           <Input placeholder="Tên sản phẩm" />
         </Form.Item>
-
         {/* Color */}
         <Form.Item name="color" label="Màu Sắc" rules={rulesNonMes}>
           <Select
             mode="multiple"
             placeholder="Chọn màu sắc"
-            onSelect={(_, e) => setColorData((pre) => [...pre, { id: e.value, name: e.children }])}
-            onDeselect={(_, e) => {
-              setColorData(colorData.filter((color) => color.id !== e.value))
-              delete gallery[e.value]
+            onSelect={(_, e) => {
+              setColorThumbnail((pre) => [...pre, { id: e.value, name: e.label }])
             }}
+            onDeselect={handleDeselectColor}
             options={colors}
           />
         </Form.Item>
-
         {/* Size */}
         <Form.Item name="size" label="Kích Thước" rules={rulesNonMes}>
-          {(!defaultValue.sizes && (
-            <Select
-              mode="multiple"
-              placeholder="Chọn kích thước"
-              onSelect={(_, e) => setSizeData((pre) => [...pre, { id: e.value, name: e.children }])}
-              onDeselect={(_, e) => setSizeData(sizesData.filter((item) => item.id !== e.value))}
-              options={sizes}
-            />
-          )) || (
-            <Select
-              mode="multiple"
-              placeholder="Chọn kích thước"
-              onSelect={(_, e) => setSizeData((pre) => [...pre, { id: e.value, name: e.children }])}
-              onDeselect={(_, e) => setSizeData(sizesData.filter((item) => item.id !== e.value))}
-              options={sizes}
-              defaultValue={defaultValue.sizes}
-            />
-          )}
+          <Select
+            mode="multiple"
+            placeholder="Chọn kích thước"
+            onSelect={(_, e) => setSizeData((pre) => [...pre, { id: e.value, name: e.label }])}
+            onDeselect={handleDeselectSize}
+            options={sizes}
+          />
         </Form.Item>
-
-        {colorData.length > 0 &&
-          colorData.map((color) => (
+        {colorThumbnail.length > 0 &&
+          colorThumbnail.map((color) => (
             <Fragment key={color.id}>
               <Form.Item
                 label={`Hình Ảnh Đại Diện Màu ${color.name}`}
@@ -252,34 +280,32 @@ const Store = () => {
               </Form.Item>
             </Fragment>
           ))}
-
         {sizesData.length > 0 &&
           sizesData.map(
             (size) =>
-              colorData.length > 0 &&
-              colorData.map((color) => {
-                const id = `${size.id}-${color.id}`
+              colorThumbnail.length > 0 &&
+              colorThumbnail.map((color) => {
                 return (
                   <Fragment key={color.id}>
                     {/* stock */}
                     <Form.Item
                       label={`Số Lượng Size ${size.name} - Màu ${color.name}`}
-                      name={`stock-${size.id}-${color.id}`}
+                      name={Math.random().toString(36).substring(7)}
                       rules={rulesNonMes}
                     >
-                      <Input type="number" onChange={(e) => handleChangeStock(e, id)} />
-                    </Form.Item>
-                    <Form.Item
-                      label={`Giá Size ${size.name} - Màu ${color.name}`}
-                      name={`price-${size.id}-${color.id}`}
-                      rules={rulesNonMes}
-                    >
-                      <Input onChange={(e) => handleChangePrice(e, id)} />
+                      <Input
+                        type="number"
+                        onChange={(e) => handleChangeStock(e.target.value, size.id, color.id)}
+                      />
                     </Form.Item>
                   </Fragment>
                 )
               }),
           )}
+        {/* price */}
+        <Form.Item label={`Giá Sản Phẩm`} name={`price`} rules={rulesNonMes}>
+          <Input />
+        </Form.Item>
 
         {/* socical */}
         <Form.Item label="Link Shopee" name="idShopee">
@@ -288,7 +314,6 @@ const Store = () => {
         <Form.Item label="Link Lazada" name="idLazada">
           <Input />
         </Form.Item>
-
         <Form.Item label="Mã Vạch" name="barcode" rules={rulesNonMes}>
           <Input />
         </Form.Item>
@@ -299,12 +324,10 @@ const Store = () => {
         <Form.Item label="Thêm Vào Style Pick" name={'stylePick'}>
           <Switch />
         </Form.Item>
-
         {/* desc */}
         <Form.Item label="Mô Tả" name="desc">
           <JoditEditor tabIndex={12} className="jodit" />
         </Form.Item>
-
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button htmlType="submit" type="primary">
             Thêm

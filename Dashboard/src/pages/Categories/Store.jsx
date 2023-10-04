@@ -6,7 +6,6 @@ import { getTypes } from 'src/services/type'
 import Toast from 'src/components/Toast'
 import { useNavigate } from 'react-router-dom'
 import { storeCategory } from 'src/services/category'
-
 const Store = (props) => {
   const { handleFinish } = props
   const navigate = useNavigate()
@@ -16,8 +15,11 @@ const Store = (props) => {
     handleFinish && console.log(values)
     await storeCategory(values)
       .then((res) => {
-        Toast.success('Store category successfully!')
-        navigate(-1)
+        if (res.success) {
+          Toast.success('Store category successfully!')
+          if (props) return handleFinish(res)
+          navigate('/dashboard/category')
+        }
       })
       .catch((err) => Toast.error('Error!'))
   }
@@ -60,6 +62,7 @@ const Store = (props) => {
           ))}
         </Select>
       </Form.Item>
+
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
         <Button style={{ width: 100 }} type="primary" htmlType="submit" className="mt-2">
           Thêm

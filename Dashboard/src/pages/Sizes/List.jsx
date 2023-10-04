@@ -56,7 +56,6 @@ function List() {
   }, [])
 
   const handleOk = async () => {
-    console.log(id)
     dispatch(hiddenModal())
     try {
       const res = await deteteSize(id)
