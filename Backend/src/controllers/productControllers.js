@@ -1,33 +1,72 @@
-import { Products } from "../models/index.js";
+import { Colors, Products, Sizes } from "../models/index.js";
 
 const index = async (req, res) => {
   await Products.find()
+    .populate("type")
+    .populate("category")
+    .populate("sizes")
+    .populate("colors")
+    .populate("media.$*.colors")
     .then((data) => {
-      data.map((item) => {
-        console.log(item);
-      });
       res.status(200).json({ success: true, data: data });
     })
     .catch((error) => res.status(500).json({ success: false, error: error }));
 };
 
 const store = async (req, res) => {
+  const media = [];
+  const colors = req.body.colors;
+  const sizes = req.body.sizes;
+  const stock = [];
+
+  colors.map((color, key) => {
+    const length = req.body.lengthGall[key];
+    let thumbnail = "";
+    let gallery = [];
+    for (let index = 0; index < length; index++) {
+      console.log(index + "", req.files[index]);
+      if (index === 0) thumbnail = req.files[0].filename;
+      else gallery.push(req.files[index].filename);
+    }
+    media.push({ colorId: color, thumbnail: thumbnail, gallery: gallery });
+  });
+
+  let key = 0;
+  await colors.map(async (color) => {
+    sizes.map(async (size) => {
+      const colorModel = await Colors.findById(color);
+      const sizeModel = await Sizes.findById(size);
+      stock.push({
+        colorId: colorModel,
+        sizeId: sizeModel,
+        qty: req.body.stock[key],
+      });
+      key++;
+    });
+  });
+
+  const salePrice = req.body.salePrice === "undefined" ? 0 : req.body.salePrice;
+  const preOrder =
+    req.body.preOrder === "undefined" ? false : req.body.preOrder;
+  const stylePick =
+    req.body.stylePick === "undefined" ? false : req.body.stylePick;
+
   const data = new Products({
     name: req.body.name,
     type: req.body.typeId,
     collections: req.body.collectionId,
-    category: req.body.categoryid,
+    category: req.body.categoryId,
     price: req.body.price,
-    salePrice: req.body.salePrice,
-    colors: req.body.colors,
-    sizes: req.body.sizes,
-    media: req.body.media,
-    stock: req.body.stock,
+    salePrice: salePrice,
+    colors: colors,
+    sizes: sizes,
+    media: media,
+    stock: stock,
     linkShopee: req.body.linkShopee,
     linkLazada: req.body.linkLazada,
     barcode: req.body.barcode,
-    preOrder: req.body.preOrder,
-    stylePick: req.body.stylePick,
+    preOrder: preOrder,
+    stylePick: stylePick,
     desc: req.body.desc,
   });
 

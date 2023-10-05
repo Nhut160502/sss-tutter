@@ -17,6 +17,7 @@ import { getLookbooks } from 'src/services/lookbook'
 import { findTypeCategory, getCategories } from 'src/services/category'
 import { getColors } from 'src/services/color'
 import { getSizes } from 'src/services/size'
+import { storeProduct } from 'src/services/product'
 
 const Store = () => {
   const [types, setTypes] = useState([])
@@ -24,77 +25,105 @@ const Store = () => {
   const [categories, setCategories] = useState([])
   const [colors, setColors] = useState([])
   const [sizes, setSizes] = useState([])
-  const [thumbnail, setThumbnail] = useState({})
-  const [gallery, setGallery] = useState({})
+  const [thumbnail, setThumbnail] = useState([])
+  const [gallery, setGallery] = useState([])
   const [sizesData, setSizeData] = useState([])
   const [colorThumbnail, setColorThumbnail] = useState([])
 
   const [openForm, setOpenForm] = useState('')
 
-  const [media, setMedia] = useState([])
   const [stock, setStock] = useState([])
 
-  const onFinish = (values) => {
-    values.thumbnail = thumbnail
-    values.gallery = gallery
-    values.stock = stock
-    console.log(values)
+  const onFinish = async (values) => {
+    const fileThumb = []
+    const fileGall = []
+
+    // arrange image by color
+    values.colors.map((color) => {
+      const thumb = thumbnail.find((item) => item?.colorId === color)
+      fileThumb.push(thumb)
+      const gall = gallery.find((item) => item?.colorId === color)
+      fileGall.push(gall)
+    })
+
+    const files = []
+    const formData = new FormData()
+    // append files
+    fileThumb.map((thumb, key) => {
+      formData.append('files', thumb.files[0])
+      files.push(thumb.files[0])
+      console.log('thumb', key)
+      fileGall.map((gall) => {
+        if (thumb.colorId === gall.colorId) {
+          let lengthGall = 0
+          gall.gallery.map((file) => {
+            formData.append('files', file)
+            files.push(file)
+            lengthGall++
+          })
+          formData.append('lengthGall', lengthGall + 1)
+        }
+      })
+    })
+
+    values.sizes.map((size) => formData.append('sizes', size))
+    values.colors.map((color) => formData.append('colors', color))
+    values.colors.map((color) => {
+      values.sizes.map((size) => {
+        const qty = stock.find((item) => item.colorId === color && item.sizeId === size)
+        formData.append('stock', qty.qty)
+      })
+    })
+
+    formData.append('name', values.name)
+    formData.append('typeId', values.typeId)
+    formData.append('categoryId', values.categoryId)
+    formData.append('price', values.price)
+    formData.append('salePrice', values.salePrice)
+    formData.append('linkShopee', values.linkShopee)
+    formData.append('linkLazada', values.linkLazada)
+    formData.append('barcode', values.barcode)
+    formData.append('preOrder', values.preOrder)
+    formData.append('stylePick', values.stylePick)
+    formData.append('desc', values.desc)
+
+    await storeProduct(formData)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err))
   }
 
   const handleGetGallery = (files, colorId) => {
     if (files.length) {
-      const check = media.some((item) => item.colorId === colorId)
-      if (check) {
-        const arr = media
-        arr.find((item) => item.colorId && (item.gallery = files))
-      } else {
-        setMedia((pre) => [...pre, { colorId: colorId, gallery: files }])
-      }
-    } else {
-      const arr = media
-      arr.find((item) => item.colorId && (item.gallery = []))
-      // setMedia(media.filter((item) => item.colorId !== colorId))
-    }
-    // !files.length ? delete gallery[id] : setGallery({ ...gallery, [`gallery-${id}`]: files })
+      const check = gallery.some((item) => item.colorId === colorId)
+      if (check)
+        gallery.map((item, key) => item.colorId === colorId && (gallery[key].files = files))
+      else setGallery((pre) => [...pre, { colorId: colorId, gallery: files }])
+    } else setGallery(gallery.filter((item) => item.colorId !== colorId))
   }
 
   const handleGetThumbnail = (files, colorId) => {
-    console.log(files)
     if (files.length) {
-      const check = media.some((item) => item.colorId === colorId)
-      console.log(check)
-      if (check) {
-        const arr = media
-        arr.find((item) => item.colorId && (item.thumbnail = files))
-      } else {
-        setMedia((pre) => [...pre, { colorId: colorId, thumbnail: files }])
-      }
-    } else {
-      const arr = media
-      arr.find((item) => item.colorId && (item.thumbnail = []))
-    }
-
-    // !files.length
-    //   ? delete thumbnail[colorId]
-    //   : setThumbnail({ ...thumbnail, [`thumbnail-${colorId}`]: files })
+      const check = thumbnail.some((item) => item.colorId === colorId)
+      if (check)
+        thumbnail.map((item, key) => item.colorId === colorId && (thumbnail[key].files = files))
+      else setThumbnail((pre) => [...pre, { colorId: colorId, files: files }])
+    } else setThumbnail(thumbnail.filter((item) => item.colorId !== colorId))
   }
-
-  console.log(media)
 
   const handleChangeStock = (qty, sizeId, colorId) => {
     const check = stock.some((item) => item.sizeId === sizeId && item.colorId === colorId)
-    if (check) {
-      const arr = stock
-      arr.find((item) => item.sizeId === sizeId && item.colorId === colorId && (item.qty = qty))
-    } else {
-      setStock((pre) => [...pre, { colorId: colorId, sizeId: sizeId, qty: qty }])
-    }
+    if (check)
+      stock.map(
+        (item, key) => item.sizeId === sizeId && item.colorId === colorId && (stock[key].qty = qty),
+      )
+    else setStock((pre) => [...pre, { colorId: colorId, sizeId: sizeId, qty: qty }])
   }
 
   const handleDeselectColor = (value) => {
     setStock(stock.filter((item) => item.colorId !== value))
     setColorThumbnail(colorThumbnail.filter((color) => color.id !== value))
-    delete gallery[value]
+    setThumbnail(thumbnail.filter((item) => item.colorId !== value))
+    setGallery(gallery.filter((item) => item.colorId !== value))
   }
 
   const handleDeselectSize = (value) => {
@@ -211,18 +240,27 @@ const Store = () => {
           {openForm === 'sizes' && <StoreSize handleFinish={handleFinishFormAdd} />}
         </Content>
       </FormAdd>
-      <Form {...configForm} onFinish={onFinish}>
+      <Form
+        {...configForm}
+        onFinish={onFinish}
+        fields={[
+          { name: 'salePrice', value: '0' },
+          { name: 'stylePick', value: 'false' },
+          { name: 'preOder', value: 'false' },
+        ]}
+      >
+        <Form.Item hidden name="media" />
         {/* Category Parent */}
-        <Form.Item name="categoryParent" label="Loại Sản Phẩm" rules={rulesNonMes}>
+        <Form.Item name="typeId" label="Loại Sản Phẩm" rules={rulesNonMes}>
           <Select placeholder="Chọn loại sản phẩm" options={types} onChange={handleChangeTypes} />
         </Form.Item>
         {/* Lookbook */}
-        <Form.Item label="Bộ Sưu Tập" name="collection" rules={rulesNonMes}>
+        <Form.Item label="Bộ Sưu Tập" name="collectionId" rules={rulesNonMes}>
           <Select placeholder="Chọn bộ sưu tập" options={lookbooks} />
         </Form.Item>
         {/* category */}
         <Form.Item
-          name={(categories.length > 0 && 'category') || null}
+          name={(categories.length > 0 && 'categoryId') || null}
           label="Danh Mục"
           rules={rulesNonMes}
         >
@@ -233,7 +271,7 @@ const Store = () => {
           <Input placeholder="Tên sản phẩm" />
         </Form.Item>
         {/* Color */}
-        <Form.Item name="color" label="Màu Sắc" rules={rulesNonMes}>
+        <Form.Item name="colors" label="Màu Sắc" rules={rulesNonMes}>
           <Select
             mode="multiple"
             placeholder="Chọn màu sắc"
@@ -245,7 +283,7 @@ const Store = () => {
           />
         </Form.Item>
         {/* Size */}
-        <Form.Item name="size" label="Kích Thước" rules={rulesNonMes}>
+        <Form.Item name="sizes" label="Kích Thước" rules={rulesNonMes}>
           <Select
             mode="multiple"
             placeholder="Chọn kích thước"
@@ -255,23 +293,15 @@ const Store = () => {
           />
         </Form.Item>
         {colorThumbnail.length > 0 &&
-          colorThumbnail.map((color) => (
+          colorThumbnail.map((color, index) => (
             <Fragment key={color.id}>
-              <Form.Item
-                label={`Hình Ảnh Đại Diện Màu ${color.name}`}
-                name="thumbnail"
-                rules={!thumbnail[`thumbnail-${color.id}`]?.length && rulesMesImg}
-              >
+              <Form.Item label={`Hình Ảnh Đại Diện Màu ${color.name}`} name="thumbnail">
                 <Upload
                   id={`thumbnail-${color.id}`}
                   getValue={(file) => handleGetThumbnail(file, color.id)}
                 />
               </Form.Item>
-              <Form.Item
-                label={`Hình Ảnh Chi Tiết Màu ${color.name}`}
-                name="gallery"
-                rules={!gallery[`gallery-${color.id}`]?.length && rulesMesImg}
-              >
+              <Form.Item label={`Hình Ảnh Chi Tiết Màu ${color.name}`} name="gallery">
                 <Upload
                   id={`gallery-${color.id}`}
                   multiple
@@ -280,17 +310,17 @@ const Store = () => {
               </Form.Item>
             </Fragment>
           ))}
-        {sizesData.length > 0 &&
-          sizesData.map(
-            (size) =>
-              colorThumbnail.length > 0 &&
-              colorThumbnail.map((color) => {
+        {colorThumbnail.length > 0 &&
+          colorThumbnail.map(
+            (color) =>
+              sizesData.length > 0 &&
+              sizesData.map((size) => {
                 return (
-                  <Fragment key={color.id}>
+                  <Fragment key={`${color.id}-${size.id}`}>
                     {/* stock */}
                     <Form.Item
-                      label={`Số Lượng Size ${size.name} - Màu ${color.name}`}
-                      name={Math.random().toString(36).substring(7)}
+                      label={`Số Lượng Màu ${color.name} - Size ${size.name}`}
+                      name={`${color.id}-${size.id}`}
                       rules={rulesNonMes}
                     >
                       <Input
@@ -305,6 +335,10 @@ const Store = () => {
         {/* price */}
         <Form.Item label={`Giá Sản Phẩm`} name={`price`} rules={rulesNonMes}>
           <Input />
+        </Form.Item>
+
+        <Form.Item label={`Giảm Giá`} name={`salePrice`} rules={rulesNonMes}>
+          <Input type="number" value="0" max="100" min="0" />
         </Form.Item>
 
         {/* socical */}

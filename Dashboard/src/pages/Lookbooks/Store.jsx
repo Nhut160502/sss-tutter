@@ -15,7 +15,7 @@ const Store = (props) => {
     formData.append('name', values.name)
     formData.append('desc', values.desc)
     await storeLookbook(formData).then((res) => {
-      res.success && (window.location = '/#/dashboard/lookbook')
+      // res.success && (window.location = '/#/dashboard/lookbook')
     })
   }
 

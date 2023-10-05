@@ -14,6 +14,7 @@ const index = async (req, res) => {
 
 const store = async (req, res) => {
   const file = req.file;
+
   try {
     const data = new Collections({
       name: req.body.name,
