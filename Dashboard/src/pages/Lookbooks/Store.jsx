@@ -2,20 +2,19 @@ import React, { useEffect, useState } from 'react'
 import { Form, Input, Button } from 'antd'
 import Upload from 'src/components/Upload'
 import { configForm, rulesMesImg } from 'src/configs/form'
-import { PropTypes } from 'prop-types'
 import { storeLookbook } from 'src/services/lookbook'
+import { useNavigate } from 'react-router-dom'
 
-const Store = (props) => {
-  const { handleFinish } = props
+const Store = () => {
+  const navigate = useNavigate()
   const [file, setFile] = useState({})
   const onFinish = async (values) => {
-    handleFinish && console.log(values)
     const formData = new FormData()
     formData.append('file', file)
     formData.append('name', values.name)
     formData.append('desc', values.desc)
     await storeLookbook(formData).then((res) => {
-      // res.success && (window.location = '/#/dashboard/lookbook')
+      res.success && navigate('/dashboard/lookbook')
     })
   }
 
@@ -50,9 +49,4 @@ const Store = (props) => {
     </Form>
   )
 }
-
-Store.propTypes = {
-  handleFinish: PropTypes.func,
-}
-
 export default Store

@@ -22,28 +22,31 @@ const productsModel = new Schema(
     sizes: [{ type: Schema.Types.ObjectId, ref: "Sizes", required: true }],
     media: [
       {
-        type: Map,
-        required: true,
-        of: new Schema({
-          colorId: {
-            type: Schema.Types.ObjectId,
-            ref: "Colors",
-          },
-          thumbnail: { type: String },
-          gallery: [{ type: String }],
-        }),
+        color: {
+          type: Schema.Types.ObjectId,
+          ref: "Colors",
+          required: true,
+        },
+        thumbnail: { type: String, required: true },
+        gallery: [{ type: String, required: true }],
       },
     ],
     stock: [
       {
-        type: Map,
-        of: new Schema({
-          sizeId: { type: Schema.Types.ObjectId, ref: "Sizes" },
-          colorId: { type: Schema.Types.ObjectId, ref: "Colors" },
-          qty: { type: Number },
-        }),
+        color: {
+          type: Schema.Types.ObjectId,
+          require: true,
+          ref: "Colors",
+        },
+        size: {
+          type: Schema.Types.ObjectId,
+          require: true,
+          ref: "Sizes",
+        },
+        qty: { type: Number, required: true },
       },
     ],
+
     linkShopee: { type: String },
     linkLazada: { type: String },
     barcode: { type: String, required: true, unique: true },

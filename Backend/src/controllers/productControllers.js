@@ -1,55 +1,50 @@
-import { Colors, Products, Sizes } from "../models/index.js";
+import { Products } from "../models/index.js";
+import fs from "fs";
 
+import "dotenv/config.js";
 const index = async (req, res) => {
   await Products.find()
     .populate("type")
-    .populate("category")
     .populate("sizes")
     .populate("colors")
-    .populate("media.$*.colors")
+    .populate("category")
+    .populate("collections")
+    .populate("stock.size", ["_id", "name"])
+    .populate("stock.color", ["_id", "name", "code"])
+    .populate("media.color", ["_id", "name", "code"])
     .then((data) => {
-      res.status(200).json({ success: true, data: data });
+      data.map((product) => {
+        product.media.map((item) => {
+          item.thumbnail = `http://${process.env.HOST}:${process.env.PORT}/media/${item.thumbnail}`;
+          item.gallery.forEach(
+            (element, index) =>
+              (item.gallery[
+                index
+              ] = `http://${process.env.HOST}:${process.env.PORT}/media/${element}`)
+          );
+        });
+      });
+      return res.status(200).json({ success: true, data: data });
     })
     .catch((error) => res.status(500).json({ success: false, error: error }));
 };
 
 const store = async (req, res) => {
   const media = [];
-  const colors = req.body.colors;
-  const sizes = req.body.sizes;
   const stock = [];
+  let i = 0;
 
-  colors.map((color, key) => {
-    const length = req.body.lengthGall[key];
-    let thumbnail = "";
-    let gallery = [];
-    for (let index = 0; index < length; index++) {
-      console.log(index + "", req.files[index]);
-      if (index === 0) thumbnail = req.files[0].filename;
-      else gallery.push(req.files[index].filename);
-    }
-    media.push({ colorId: color, thumbnail: thumbnail, gallery: gallery });
-  });
+  req.body.media.map((item) => media.push(JSON.parse(item)));
+  req.body.stock.map((item) => stock.push(JSON.parse(item)));
 
-  let key = 0;
-  await colors.map(async (color) => {
-    sizes.map(async (size) => {
-      const colorModel = await Colors.findById(color);
-      const sizeModel = await Sizes.findById(size);
-      stock.push({
-        colorId: colorModel,
-        sizeId: sizeModel,
-        qty: req.body.stock[key],
-      });
-      key++;
+  media.map((item) => {
+    item.thumbnail = req.files[i].filename;
+    i++;
+    item.gallery.map((_, key) => {
+      item.gallery[key] = req.files[i].filename;
+      i++;
     });
   });
-
-  const salePrice = req.body.salePrice === "undefined" ? 0 : req.body.salePrice;
-  const preOrder =
-    req.body.preOrder === "undefined" ? false : req.body.preOrder;
-  const stylePick =
-    req.body.stylePick === "undefined" ? false : req.body.stylePick;
 
   const data = new Products({
     name: req.body.name,
@@ -57,32 +52,62 @@ const store = async (req, res) => {
     collections: req.body.collectionId,
     category: req.body.categoryId,
     price: req.body.price,
-    salePrice: salePrice,
-    colors: colors,
-    sizes: sizes,
+    salePrice: req.body.salePrice,
+    colors: req.body.colors,
+    sizes: req.body.sizes,
     media: media,
     stock: stock,
     linkShopee: req.body.linkShopee,
     linkLazada: req.body.linkLazada,
     barcode: req.body.barcode,
-    preOrder: preOrder,
-    stylePick: stylePick,
+    preOrder: req.body.preOrder,
+    stylePick: req.body.stylePick,
     desc: req.body.desc,
   });
 
   await data
     .save()
     .then((data) => res.status(200).json({ success: true, data: data }))
-    .catch((error) => res.status(500).json({ success: false, error: error }));
+    .catch((error) => {
+      if (req.files.length > 0) {
+        const files = req.files;
+        files.map((file) => fs.unlinkSync(`public\\media\\${file.filename}`));
+      }
+      console.log(error);
+      return res.status(500).json({ success: false, error: error });
+    });
 };
 
 const show = async (req, res) => {
   await Products.findOne({ slug: req.params.slug })
-    .then((data) => res.status(200).json({ success: true, data: data }))
+    .populate("type")
+    .populate("category")
+    .populate("collections")
+    .populate("stock.color", ["_id", "name", "code"])
+    .populate("stock.size", ["_id", "name"])
+    .populate("media.color", ["_id", "name", "code"])
+    .then((data) => {
+      data.media.map((item) => {
+        item.thumbnail = `http://${process.env.HOST}:${process.env.PORT}/media/${item.thumbnail}`;
+        item.gallery.forEach(
+          (element, index) =>
+            (item.gallery[
+              index
+            ] = `http://${process.env.HOST}:${process.env.PORT}/media/${element}`)
+        );
+      });
+      return res.status(200).json({ success: true, data: data });
+    })
     .catch((error) => res.status(500).json({ success: true, error: error }));
 };
 
 const update = async (req, res) => {
+  console.log(req.body);
+  const stock = [];
+  req.body.stock.map((item) => stock.push(JSON.parse(item)));
+  console.log(stock);
+  return res.json({ success: true });
+
   try {
     const data = await Products.findById(req.params.id);
 
@@ -104,8 +129,18 @@ const update = async (req, res) => {
     data.updatedAt = Date.now();
 
     await data.save();
-
-    res.status(200).json({ success: true, data: data });
+    data.map((product) => {
+      product.media.map((item) => {
+        item.thumbnail = `http://${process.env.HOST}:${process.env.PORT}/media/${item.thumbnail}`;
+        item.gallery.forEach(
+          (element, index) =>
+            (item.gallery[
+              index
+            ] = `http://${process.env.HOST}:${process.env.PORT}/media/${element}`)
+        );
+      });
+    });
+    return res.status(200).json({ success: true, data: data });
   } catch (error) {
     res.status(500).json({ success: false, error: error });
   }
@@ -113,7 +148,10 @@ const update = async (req, res) => {
 
 const destroy = async (req, res) => {
   await Products.findByIdAndDelete(req.params.id)
-    .then(async () => res.status(200).json({ success: true }))
+    .then(async () => {
+      const data = await Products.find();
+      res.status(200).json({ success: true, data: data });
+    })
     .catch((error) => res.status(500).json({ success: false, error: error }));
 };
 
