@@ -222,7 +222,7 @@ const Store = () => {
 
         {/* Lookbook */}
 
-        <Form.Item label="Bộ Sưu Tập" name="collectionId" rules={rulesNonMes}>
+        <Form.Item label="Bộ Sưu Tập" name="collectionId">
           <Select placeholder="Chọn bộ sưu tập" options={lookbooks} />
         </Form.Item>
 

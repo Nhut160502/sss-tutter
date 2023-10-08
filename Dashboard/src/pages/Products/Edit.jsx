@@ -177,10 +177,10 @@ const Edit = () => {
   const handleDeselectedColor = (id) => {
     media.map((item) => {
       if (item.color._id === id) {
-        typeof item?.thumbnail === 'string' && setOldMedia((pre) => [...pre, item.thumbnail])
         item?.gallery?.map(
           (gall) => typeof gall === 'string' && setOldMedia((pre) => [...pre, gall]),
         )
+        typeof item?.thumbnail === 'string' && setOldMedia((pre) => [...pre, item.thumbnail])
       }
     })
     setMedia(media.filter((item) => item.color._id !== id))
@@ -268,7 +268,7 @@ const Edit = () => {
         { name: 'barcode', value: product?.barcode },
         { name: 'preOrder', value: product?.preOrder },
         { name: 'stylePick', value: product?.stylePick },
-        { name: 'desc', value: product?.desc || '' },
+        { name: 'desc', value: product?.desc },
         //
       ]}
     >
@@ -377,12 +377,12 @@ const Edit = () => {
       </Form.Item>
 
       <Form.Item label="Mô Tả" name="desc">
-        <JoditEditor tabIndex={12} className="jodit" value={product?.desc} />
+        <JoditEditor tabIndex={12} className="jodit" />
       </Form.Item>
 
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
         <Button htmlType="submit" type="primary">
-          Thêm
+          Cập Nhật
         </Button>
       </Form.Item>
     </Form>

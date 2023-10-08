@@ -118,9 +118,14 @@ const List = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await getProducts().then((res) => {
-        setData(res.data)
-      })
+      await getProducts()
+        .then((res) => {
+          setData(res.data)
+        })
+        .catch((error) => {
+          setData([])
+          Toast.error('Error!')
+        })
     }
     fetchData()
   }, [])

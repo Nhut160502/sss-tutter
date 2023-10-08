@@ -53,7 +53,7 @@ const productsModel = new Schema(
     preOrder: { type: Boolean },
     stylePick: { type: Boolean },
     status: { type: Boolean, default: true },
-    desc: { Type: String },
+    desc: { type: String, required: true },
   },
   { timestamps: true }
 );

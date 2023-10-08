@@ -30,7 +30,7 @@ function Store(props) {
         <Input />
       </Form.Item>
       <Form.Item label="Mã Màu" name="code" rules={rulesNonMes}>
-        <ColorPicker showText format="rgb" />
+        <ColorPicker showText />
       </Form.Item>
       <Form.Item wrapperCol={{ offset: 8 }}>
         <Button htmlType="submit" type="primary">
