@@ -14,15 +14,16 @@ import { getSizes } from 'src/services/size'
 import { getTypes } from 'src/services/type'
 
 const Edit = () => {
+  const [form] = Form.useForm()
   const { slugProduct } = useParams()
   const [media, setMedia] = useState([])
   const [stock, setStock] = useState([])
   const [types, setTypes] = useState([])
-  const [colors, setColors] = useState([])
   const [product, setProduct] = useState({})
-  const [preview, setPreview] = useState([])
+  const [oldMedia, setOldMedia] = useState([])
   const [sizesAPI, setSizesAPI] = useState([])
   const [sizeData, setSizeData] = useState([])
+  const [colorsAPI, setColorsAPI] = useState([])
   const [lookbooks, setLookbooks] = useState([])
   const [colorData, setColorData] = useState([])
   const [categories, setCategories] = useState([])
@@ -39,101 +40,172 @@ const Edit = () => {
         const color = await getColors()
         const size = await getSizes()
         setTypes([])
+        setStock([])
+        setMedia([])
+        setProduct([])
+        setSizeData([])
         setSizesAPI([])
-        setColors([])
         setLookbooks([])
+        setColorsAPI([])
         setCategories([])
+        setColorData([])
 
         setProduct(data)
-        setPreview(data.media)
         setStock(data.stock)
-        setColorData(data.colors)
+        setMedia(data.media)
         setSizeData(data.sizes)
+        setColorData(data.colors)
 
         setData(type.data, setTypes)
         setData(size.data, setSizesAPI)
-        setData(color.data, setColors)
+        setData(color.data, setColorsAPI)
         setData(lookbook.data, setLookbooks)
         setData(category.data, setCategories)
+
+        data.stock.map((item) => {
+          const name = `${item.color._id}-${item.size._id}`
+          return form.setFieldsValue({
+            [name]: item.qty,
+          })
+        })
       } catch (error) {}
     }
 
     fetchData()
-  }, [slugProduct])
+  }, [slugProduct, form])
 
-  const handleSetThumbnail = (files, colorId) => {
+  const handleSetThumbnail = (files, color) => {
     if (files) {
       const file = files[0]
-      const check = media.some((item) => item.color === colorId)
-      if (check) media.map((item, key) => item.color === colorId && (media[key].thumbnail = file))
-      else setMedia((pre) => [...pre, { color: colorId, thumbnail: file }])
-    } else media.map((item, key) => item.color === colorId && delete media[key].thumbnail)
+      const check = media.some((item) => item.color._id === color._id)
+      if (check) {
+        media.some((item) => item.color._id === color._id && typeof item.thumbnail === 'string') &&
+          setOldMedia((pre) => [
+            ...pre,
+            media.find((item) => item.color._id === color._id && typeof item.thumbnail === 'string')
+              .thumbnail,
+          ])
+
+        media.map((item, key) => item.color._id === color._id && (media[key].thumbnail = file))
+      } else
+        setMedia((pre) => [
+          ...pre,
+          { color: { _id: color._id, name: color.name }, thumbnail: file },
+        ])
+    } else media.map((item, key) => item.color._id === color._id && delete media[key].thumbnail)
   }
 
-  const handleSetGallery = (files, colorId) => {
+  const handleSetGallery = (files, color) => {
     if (files.length > 0) {
-      const check = media.some((item) => item.color === colorId)
-      if (check) media.map((item, key) => item.color === colorId && (media[key].gallery = files))
-      else setMedia((pre) => [...pre, { color: colorId, gallery: files }])
-    } else media.map((item, key) => item.color === colorId && delete media[key].gallery)
+      const check = media.some((item) => item.color._id === color._id)
+      if (check) {
+        media.map(
+          (item) =>
+            item.color._id === color._id &&
+            item?.gallery?.map(
+              (gall) => typeof gall === 'string' && setOldMedia((pre) => [...pre, gall]),
+            ),
+        )
+        media.map((item, key) => item.color._id === color._id && (media[key].gallery = files))
+      } else
+        setMedia((pre) => [...pre, { color: { _id: color._id, name: color.name }, gallery: files }])
+    } else media.map((item, key) => item.color._id === color._id && delete media[key].gallery)
   }
 
   const handleSelectColor = (_, e) => {
-    setPreview((pre) => [...pre, { color: { _id: e.value, name: e.label } }])
-    setColorData((pre) => [...pre, _])
-    const getSize = []
-    stock.map((item) =>
-      getSize.some((size) => size._id !== item.size._id && getSize.push(item.size)),
-    )
+    if (product.colors.some((color) => color === e.value)) {
+      setMedia((pre) => [...pre, product.media.find((item) => item.color._id === e.value)])
+      const arr = []
+    } else setMedia((pre) => [...pre, { color: { _id: e.value, name: e.label } }])
 
-    console.log(getSize)
+    setColorData((pre) => [...pre, e.value])
+    sizeData.map((size) => {
+      if (!product.colors.some((item) => item === e.value))
+        form.setFieldsValue({
+          [`${e.value}-${size}`]: '',
+        })
+      const name = sizesAPI.find((item) => item.value === size).label
+      return setStock((pre) => [
+        ...pre,
+        {
+          color: { _id: _, name: e.label },
+          size: { _id: size, name: name },
+        },
+      ])
+    })
+  }
 
-    // getSize.map((item) =>
-    //   setStock((pre) => [
-    //     ...pre,
-    //     { color: { _id: e.value, name: e.label }, size: { _id: item._id, name: item.name } },
-    //   ]),
-    // )
+  const handleSelectSize = (_, e) => {
+    setSizeData((pre) => [...pre, _])
+    colorData.map((color) => {
+      if (!product.sizes.some((item) => item === e.value))
+        form.setFieldsValue({
+          [`${color}-${e.value}`]: '',
+        })
+
+      const name = colorsAPI.find((item) => item.value === color).label
+
+      return setStock((pre) => [
+        ...pre,
+        {
+          color: { _id: color, name: name },
+          size: { _id: _, name: e.label },
+        },
+      ])
+    })
   }
 
   const handleDeselectedColor = (id) => {
-    setPreview(preview.filter((item) => item.color._id !== id))
-    setStock(stock.filter((item) => item.color._id !== id))
+    media.map((item) => {
+      if (item.color._id === id) {
+        typeof item.thumbnail === 'string' && setOldMedia((pre) => [...pre, item.thumbnail])
+        item.gallery.map((gall) => typeof gall === 'string' && setOldMedia((pre) => [...pre, gall]))
+      }
+    })
+    setMedia(media.filter((item) => item.color._id !== id))
     setColorData(colorData.filter((item) => item !== id))
+    setStock(stock.filter((item) => item.color._id !== id))
   }
 
   const handleDeselectedSize = (id) => {
-    setStock(stock.filter((item) => item.size._id !== id))
     setSizeData(sizeData.filter((item) => item !== id))
+    setStock(stock.filter((item) => item.size._id !== id))
+  }
+
+  const handleSetStock = (value, coloId, sizeId) => {
+    stock.find(
+      (item) => item.color._id === coloId && item.size._id === sizeId && (item.qty = value),
+    )
   }
 
   const onFinish = async (values) => {
     const newStock = []
     const newMedia = []
-    const oldMedia = []
-
-    stock.map((item) =>
-      newStock.push({ color: item.color._id, size: item.size._id, qty: item.qty }),
-    )
-
-    media.map((med) => {
-      if (med.thumbnail) oldMedia.push(preview.find((pre) => pre.color._id === med.color).thumbnail)
-      if (med.gallery.length && med.gallery.length > 0) {
-        const gallery = preview.find((pre) => pre.color._id === med.color).gallery
-        gallery.map((item) => oldMedia.push(item))
-      }
-    })
-
     const formData = new FormData()
 
-    if (oldMedia.length > 0)
-      oldMedia.map((item) => formData.append('oldMedia', JSON.stringify(item)))
-    if (media.length > 0) {
-      values.colors.map((color) => newMedia.push(media.find((item) => item.color === color)))
-      values.colors.map((color) => newMedia.push(media.find((item) => item.color === color)))
-      newMedia.map((item) => formData.append('media', JSON.stringify(item)))
-    }
-    newStock.map((item) => formData.append('stock', JSON.stringify(item)))
+    colorData.map((color) =>
+      sizeData.map((size) => {
+        const value = stock.find((item) => item.color._id === color && item.size._id === size)
+        return (
+          value &&
+          newStock.push({
+            color: color,
+            size: size,
+            qty: Number(value.qty),
+          })
+        )
+      }),
+    )
+
+    media.map((item) =>
+      newMedia.push({ color: item.color._id, thumbnail: item.thumbnail, gallery: item.gallery }),
+    )
+
+    newMedia.map((item) => {
+      formData.append('files', item.thumbnail)
+      item?.gallery?.map((file) => formData.append('files', file))
+      return formData.append('media', JSON.stringify(item))
+    })
 
     formData.append('name', values.name)
     formData.append('desc', values.desc)
@@ -148,11 +220,18 @@ const Edit = () => {
     formData.append('collectionId', values.collectionId)
     values.sizes.map((size) => formData.append('sizes', size))
     values.colors.map((color) => formData.append('colors', color))
+    newStock.map((item) => formData.append('stock', JSON.stringify(item)))
+    oldMedia?.map((item) => formData.append('oldMedia', item))
 
     await updateProduct(product._id, formData).then((res) => console.log(res))
   }
+
+  console.log(oldMedia)
+  console.log(media)
+
   return (
     <Form
+      form={form}
       {...configForm}
       onFinish={onFinish}
       fields={[
@@ -192,7 +271,7 @@ const Edit = () => {
       <Form.Item name="colors" label="Màu Sắc" rules={rulesNonMes}>
         <Select
           mode="multiple"
-          options={colors}
+          options={colorsAPI}
           placeholder="Chọn màu sắc"
           onDeselect={handleDeselectedColor}
           onSelect={handleSelectColor}
@@ -204,21 +283,22 @@ const Edit = () => {
           placeholder="Chọn kích thước"
           options={sizesAPI}
           mode="multiple"
-          onDeselect={handleDeselectedSize}
+          onSelect={handleSelectSize}
+          onDeselect={(e) => handleDeselectedSize(e)}
         />
       </Form.Item>
 
-      {preview.map((item) => {
+      {media.map((item) => {
         let data = []
         if (item.thumbnail) data.push(item.thumbnail)
         else data = null
         return (
-          <Fragment key={item._id}>
+          <Fragment key={item?.color?._id}>
             <Form.Item label={`Hình Ảnh Đại Diện Màu ${item?.color?.name}`} name="thumbnail">
               <Upload
                 data={data}
                 id={`thumbnail-${item?._id}`}
-                getValue={(files) => handleSetThumbnail(files, item?.color?._id)}
+                getValue={(files) => handleSetThumbnail(files, item?.color)}
               />
             </Form.Item>
 
@@ -227,23 +307,27 @@ const Edit = () => {
                 multiple
                 data={item.gallery}
                 id={`gallery-${item._id}`}
-                getValue={(files) => handleSetGallery(files, item?.color?._id)}
+                getValue={(files) => handleSetGallery(files, item?.color)}
               />
             </Form.Item>
           </Fragment>
         )
       })}
       {stock.map((item) => (
-        <Fragment key={`${item?._id}`}>
-          <Form.Item
-            rules={rulesNonMes}
-            label={`Số Lượng Màu ${item?.color?.name} - Size ${item?.size?.name}`}
-          >
-            <Input type="number" value={item?.qty} />
-          </Form.Item>
-        </Fragment>
+        <Form.Item
+          key={`${item?.color._id}-${item?.size?._id}`}
+          name={`${item?.color._id}-${item?.size?._id}`}
+          rules={rulesNonMes}
+          label={`Số Lượng Màu ${item?.color?.name} - Size ${item?.size?.name}`}
+        >
+          <Input
+            type="number"
+            onChange={(e) => {
+              handleSetStock(e.target.value, item.color._id, item.size._id)
+            }}
+          />
+        </Form.Item>
       ))}
-
       <Form.Item name="price" label="Giá Sản Phẩm" rules={rulesNonMes}>
         <Input type="number" />
       </Form.Item>
