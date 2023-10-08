@@ -3,7 +3,7 @@ import JoditEditor from 'jodit-react'
 import React, { Fragment } from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import Upload from 'src/components/Upload'
 import { configForm, rulesNonMes } from 'src/configs/form'
 import { getCategories } from 'src/services/category'
@@ -14,6 +14,7 @@ import { getSizes } from 'src/services/size'
 import { getTypes } from 'src/services/type'
 
 const Edit = () => {
+  const navigate = useNavigate()
   const [form] = Form.useForm()
   const { slugProduct } = useParams()
   const [media, setMedia] = useState([])
@@ -113,9 +114,19 @@ const Edit = () => {
   }
 
   const handleSelectColor = (_, e) => {
+    const arr = []
     if (product.colors.some((color) => color === e.value)) {
       setMedia((pre) => [...pre, product.media.find((item) => item.color._id === e.value)])
-      const arr = []
+      product.media.map(
+        (item) =>
+          item.color._id === e.value &&
+          arr.push(item.thumbnail) &&
+          item.gallery.map((gall) => arr.push(gall)),
+      )
+
+      oldMedia.map(
+        (old, index) => arr.some((item) => item === old) && setOldMedia(delete oldMedia[index]),
+      )
     } else setMedia((pre) => [...pre, { color: { _id: e.value, name: e.label } }])
 
     setColorData((pre) => [...pre, e.value])
@@ -124,6 +135,14 @@ const Edit = () => {
         form.setFieldsValue({
           [`${e.value}-${size}`]: '',
         })
+      if (product.colors.some((item) => item === e.value)) {
+        product.media.map(
+          (item) =>
+            item.color._id === e.value &&
+            item.gallery.map((gall) => setOldMedia(oldMedia.filter((item) => item !== gall))) &&
+            setOldMedia(oldMedia.filter((item) => item !== item.thumbnail)),
+        )
+      }
       const name = sizesAPI.find((item) => item.value === size).label
       return setStock((pre) => [
         ...pre,
@@ -158,8 +177,10 @@ const Edit = () => {
   const handleDeselectedColor = (id) => {
     media.map((item) => {
       if (item.color._id === id) {
-        typeof item.thumbnail === 'string' && setOldMedia((pre) => [...pre, item.thumbnail])
-        item.gallery.map((gall) => typeof gall === 'string' && setOldMedia((pre) => [...pre, gall]))
+        typeof item?.thumbnail === 'string' && setOldMedia((pre) => [...pre, item.thumbnail])
+        item?.gallery?.map(
+          (gall) => typeof gall === 'string' && setOldMedia((pre) => [...pre, gall]),
+        )
       }
     })
     setMedia(media.filter((item) => item.color._id !== id))
@@ -221,13 +242,12 @@ const Edit = () => {
     values.sizes.map((size) => formData.append('sizes', size))
     values.colors.map((color) => formData.append('colors', color))
     newStock.map((item) => formData.append('stock', JSON.stringify(item)))
-    oldMedia?.map((item) => formData.append('oldMedia', item))
+    oldMedia.map((item) => formData.append('oldMedia', item))
 
-    await updateProduct(product._id, formData).then((res) => console.log(res))
+    await updateProduct(product._id, formData).then((res) => navigate('/dashboard/san-pham'))
   }
 
   console.log(oldMedia)
-  console.log(media)
 
   return (
     <Form

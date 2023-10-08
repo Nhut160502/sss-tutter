@@ -102,8 +102,8 @@ const show = async (req, res) => {
 };
 
 const update = async (req, res) => {
+  console.log(req.body);
   try {
-    console.log(req.body);
     const media = [];
     const stock = [];
     const oldMedia = req.body.oldMedia;
@@ -150,19 +150,18 @@ const update = async (req, res) => {
     data.updatedAt = Date.now();
 
     await data.save();
-    if (oldMedia) {
-      if (oldMedia.length > 0)
-        oldMedia.map((file) =>
-          fs.unlinkSync(`public\\media\\${file.split("/media/", 2)[1]}`)
-        );
-      else fs.unlinkSync(`public\\media\\${oldMedia.split("/media/", 2)[1]}`);
-    }
+    if (typeof oldMedia === "string") 
+      fs.existsSync(`public/media/${oldMedia.split("/media/", 2)[1]}`) && fs.unlinkSync(`public/media/${oldMedia.split("/media/", 2)[1]}`)
+    else 
+      oldMedia?.map((file) => 
+         fs.existsSync(`public/media/${oldMedia.split("/media/", 2)[1]}`) && fs.unlinkSync(`public/media/${file.split("/media/", 2)[1]}`)
+      )
     return res.status(200).json({ success: true, data: data });
   } catch (error) {
     const files = req.files;
     if (files.length > 0) {
       files.map((file) => {
-        fs.unlinkSync(`public\\media\\${file.filename}`);
+         fs.unlinkSync(`public/media/${file.filename}`);
       });
     }
     console.log(error);
@@ -174,13 +173,16 @@ const destroy = async (req, res) => {
   await Products.findByIdAndDelete(req.params.id)
     .then(async (product) => {
       product.media.map((item) => {
-        fs.unlinkSync(`public\\media\\${item.thumbnail}`);
-        item.gallery.map((gall) => fs.unlinkSync(`public\\media\\${gall}`));
+        fs.existsSync(`public/media/${item.thumbnail}`) && fs.unlinkSync(`public/media/${item.thumbnail}`);
+        item.gallery.map((gall) => fs.unlinkSync(`public/media/${gall}`));
       });
       const data = await Products.find();
       res.status(200).json({ success: true, data: data });
     })
-    .catch((error) => res.status(500).json({ success: false, error: error }));
+    .catch((error) => {
+      console.log(error);
+      res.status(500).json({ success: false, error: error })
+    });
 };
 
 export { index, store, show, destroy, update };

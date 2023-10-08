@@ -16,9 +16,7 @@ const List = () => {
       dataIndex: 'name',
       key: '_id',
       sorter: (a, b) => a.name.length - b.name.length,
-      render: (text, record) => (
-        <Link to={`http://localhost:4000/dashboard/san-pham/edit/${record.slug}`}>{text}</Link>
-      ),
+      render: (text, record) => <Link to={`/dashboard/san-pham/edit/${record.slug}`}>{text}</Link>,
     },
     {
       title: 'Loại Sản Phẩm',
