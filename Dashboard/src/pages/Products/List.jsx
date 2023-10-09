@@ -120,7 +120,9 @@ const List = () => {
     const fetchData = async () => {
       await getProducts()
         .then((res) => {
-          setData(res.data)
+          const data = res.data
+          data.map((product, key) => (data[key].createdAt = data[key].createdAt.split('T', [2])[0]))
+          setData(data)
         })
         .catch((error) => {
           setData([])
@@ -149,7 +151,15 @@ const List = () => {
           <Link to="/dashboard/san-pham/store">Thêm Mới</Link>
         </Button>
       </Top>
-      <Table dataSource={data} columns={columns} />
+      <Table
+        dataSource={data}
+        columns={columns}
+        pagination={{
+          defaultPageSize: 5,
+          showSizeChanger: true,
+          pageSizeOptions: ['10', '15', '20'],
+        }}
+      />
     </>
   )
 }

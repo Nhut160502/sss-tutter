@@ -131,45 +131,55 @@ const Store = () => {
   }
 
   const onFinish = async (values) => {
-    const newMedia = []
-    const formData = new FormData()
+    let check = true
+    if (media.length <= 0 || media.length !== values.colors.length) check = false
+    media.map((item) => (!item.thumbnail || !item?.gallery?.length) && (check = false))
 
-    // arrange files
-    values.colors.map((color) => newMedia.push(media.find((med) => med.color === color)))
-    newMedia.map((item) => {
-      formData.append('files', item.thumbnail)
-      item.gallery.map((gall) => formData.append('files', gall))
-      return formData.append('media', JSON.stringify(item))
-    })
+    if (!check) onFinishFailed()
+    else {
+      const newMedia = []
+      const formData = new FormData()
+      // arrange files
+      values.colors.map((color) => newMedia.push(media.find((med) => med.color === color)))
+      newMedia.map((item) => {
+        formData.append('files', item.thumbnail)
+        item.gallery.map((gall) => formData.append('files', gall))
+        return formData.append('media', JSON.stringify(item))
+      })
 
-    values.colors.map((color) =>
-      values.sizes.map((size) =>
-        formData.append(
-          'stock',
-          JSON.stringify(stock.find((item) => item.color === color && item.size === size)),
+      values.colors.map((color) =>
+        values.sizes.map((size) =>
+          formData.append(
+            'stock',
+            JSON.stringify(stock.find((item) => item.color === color && item.size === size)),
+          ),
         ),
-      ),
-    )
+      )
 
-    values.sizes.map((size) => formData.append('sizes', size))
-    values.colors.map((color) => formData.append('colors', color))
+      values.sizes.map((size) => formData.append('sizes', size))
+      values.colors.map((color) => formData.append('colors', color))
 
-    formData.append('desc', values.desc)
-    formData.append('name', values.name)
-    formData.append('price', values.price)
-    formData.append('typeId', values.typeId)
-    formData.append('barcode', values.barcode)
-    formData.append('preOrder', values.preOrder)
-    formData.append('salePrice', values.salePrice)
-    formData.append('stylePick', values.stylePick)
-    formData.append('categoryId', values.categoryId)
-    formData.append('linkShopee', values.linkShopee)
-    formData.append('linkLazada', values.linkLazada)
-    formData.append('collectionId', values.collectionId)
+      formData.append('desc', values.desc)
+      formData.append('name', values.name)
+      formData.append('price', values.price)
+      formData.append('typeId', values.typeId)
+      formData.append('barcode', values.barcode)
+      formData.append('preOrder', values.preOrder)
+      formData.append('salePrice', values.salePrice)
+      formData.append('stylePick', values.stylePick)
+      formData.append('categoryId', values.categoryId)
+      formData.append('linkShopee', values.linkShopee)
+      formData.append('linkLazada', values.linkLazada)
+      formData.append('collectionId', values.collectionId)
 
-    await storeProduct(formData)
-      .then((res) => res.success && navigate('/dashboard/san-pham'))
-      .catch((err) => console.log(err))
+      await storeProduct(formData)
+        .then((res) => res.success && navigate('/dashboard/san-pham'))
+        .catch((err) => console.log(err))
+    }
+  }
+
+  const onFinishFailed = () => {
+    Toast.warning('Vui lòng điền đủ thông tin sản phẩm!')
   }
 
   useEffect(() => {
@@ -204,6 +214,7 @@ const Store = () => {
       <Form
         {...configForm}
         onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
         fields={[
           { name: 'salePrice', value: '0' },
           { name: 'linkShopee', value: '' },

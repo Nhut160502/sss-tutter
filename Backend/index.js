@@ -3,7 +3,8 @@ import "dotenv/config";
 import cors from "cors";
 import session from "express-session";
 import { connectDatabase } from "./src/configs/database.js";
-import router from "./src/routers/index.js";
+import privateRouter from "./src/routers/private/index.js";
+import publicRouter from "./src/routers/public/index.js";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 
@@ -29,7 +30,8 @@ app.use(
 );
 
 // config router
-app.use("/api", router);
+app.use("/dashboard/api", privateRouter);
+app.use("/customer/api", publicRouter);
 
 app.listen(8080, () => {
   console.log(
