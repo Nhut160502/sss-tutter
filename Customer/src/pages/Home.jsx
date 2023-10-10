@@ -45,13 +45,20 @@ function Home() {
 
   useEffect(() => {
     const fetchNewArrivals = async () => {
-      await getNewArrivals().then((res) => setNewArrivals(res.data));
+      await getNewArrivals()
+        .then((res) => setNewArrivals(res.data))
+        .catch((err) => console.log(err));
     };
+    fetchNewArrivals();
+  }, []);
+
+  useEffect(() => {
     const fetchBestSeller = async () => {
-      await getBestSeller().then((res) => setBestSeller(res.data));
+      await getBestSeller()
+        .then((res) => setBestSeller(res.data))
+        .catch((err) => console.log(err));
     };
 
-    fetchNewArrivals();
     fetchBestSeller();
   }, []);
   return (
@@ -101,7 +108,7 @@ function Home() {
               <p className="text-xs text-sm text-md text-lg">
                 Giảm <strong>15%</strong>
               </p>
-              <div class="item">
+              <div className="item">
                 <p className="text-xs text-sm text-md text-lg">
                   Nhập mã: <strong> HELLO</strong>.
                 </p>

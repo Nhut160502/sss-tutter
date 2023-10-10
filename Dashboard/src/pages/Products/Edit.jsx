@@ -373,7 +373,7 @@ const Edit = () => {
       </Form.Item>
 
       <Form.Item label="Thêm Vào Style Pick" name={'stylePick'}>
-        <Switch />
+        <Switch checked />
       </Form.Item>
 
       <Form.Item label="Mô Tả" name="desc">

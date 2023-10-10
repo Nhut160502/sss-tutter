@@ -54,7 +54,7 @@ function Header() {
                 </Link>
               </Left>
             </Col>
-            <Col sm="5" md="6" clas>
+            <Col sm="5" md="6">
               <Center>
                 <Link to="/about">About sss</Link>
                 <Link to="/c/for-him">Sản Phẩm</Link>

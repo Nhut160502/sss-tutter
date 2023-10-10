@@ -4,6 +4,7 @@ import { DownOutlined, PicCenterOutlined } from "@ant-design/icons";
 import { Col, Row } from "react-bootstrap";
 import Product from "../components/Product";
 import Button from "../components/Button";
+import { getList } from "../services/product";
 
 const Category = () => {
   const [openCategory, setOpenCategory] = useState(false);
@@ -34,6 +35,15 @@ const Category = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [scroll]);
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getList().then((res) => setData(res.data));
+    };
+    fetchData();
+  }, []);
 
   return (
     <Wrapper>

@@ -1,6 +1,5 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import ReactDOM from "react-dom";
 import Slider from "react-slick";
 import { styled } from "styled-components";
 import { ToolOutlined, LoadingOutlined } from "@ant-design/icons";
@@ -75,7 +74,7 @@ function Product() {
         .catch((err) => setData({}));
     };
     fetchData();
-  }, []);
+  }, [slugProduct]);
 
   return (
     <Wrapper>
