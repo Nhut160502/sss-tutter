@@ -6,6 +6,11 @@ import Slider from "react-slick";
 import { Link } from "react-router-dom";
 import Blog from "../components/Blog";
 import Banner from "../components/Banner";
+import { useEffect, useState } from "react";
+import {
+  newArrivals as getNewArrivals,
+  bestSaller as getBestSeller,
+} from "../services/product";
 
 var settings = {
   dots: false,
@@ -35,6 +40,20 @@ var settingsBlog = {
 };
 
 function Home() {
+  const [newArrivals, setNewArrivals] = useState([]);
+  const [bestSeller, setBestSeller] = useState([]);
+
+  useEffect(() => {
+    const fetchNewArrivals = async () => {
+      await getNewArrivals().then((res) => setNewArrivals(res.data));
+    };
+    const fetchBestSeller = async () => {
+      await getBestSeller().then((res) => setBestSeller(res.data));
+    };
+
+    fetchNewArrivals();
+    fetchBestSeller();
+  }, []);
   return (
     <Wrapper>
       <Slider
@@ -136,11 +155,10 @@ function Home() {
         </Title>
         <Content>
           <Slider {...settings}>
-            <Product />
-            <Product />
-            <Product />
-            <Product />
-            <Product />
+            {newArrivals?.map((item) => {
+              console.log(item.media[0].gallery[0]);
+              return <Product key={item._id} data={item} />;
+            })}
           </Slider>
         </Content>
       </NewArrivals>
@@ -165,30 +183,11 @@ function Home() {
           </ul>
         </Category>
         <Row>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
+          {bestSeller.map((item) => (
+            <Col key={item._id} sm="3">
+              <Product data={item} />
+            </Col>
+          ))}
         </Row>
       </BestSeller>
 
@@ -222,11 +221,9 @@ function Home() {
         </Title>
         <Content>
           <Slider {...settingsStyle}>
-            <Product />
-            <Product />
-            <Product />
-            <Product />
-            <Product />
+            {newArrivals.map((item) => (
+              <Product key={item._id} data={item} />
+            ))}
           </Slider>
         </Content>
       </StylePick>

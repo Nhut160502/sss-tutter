@@ -1,14 +1,11 @@
 import { Link } from "react-router-dom";
 import { styled } from "styled-components";
-function Product() {
+function Product({ data }) {
   return (
     <Wrapper>
-      <Link to="/p/smart-tee---fit">
+      <Link to={`/p/${data?.slug}`}>
         <Image>
-          <img
-            src="https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694710267329.webp"
-            alt=""
-          />
+          <img src={data?.media[0]?.gallery[0]} alt="" />
           <img
             className="new"
             src="https://ssstutter.com/img/mark.png"
@@ -18,11 +15,11 @@ function Product() {
         </Image>
         <Infor>
           <div className="top">
-            <h4 className="name">Smart tee fit</h4>
-            <h4 className="price">499,000</h4>
+            <h4 className="name">{data?.name}</h4>
+            <h4 className="price">{data?.price}</h4>
           </div>
           <div className="color">
-            <span>3 màu</span>
+            <span>{data?.colors?.length} màu</span>
           </div>
         </Infor>
       </Link>

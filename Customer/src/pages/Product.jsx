@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
+import ReactDOM from "react-dom";
 import Slider from "react-slick";
 import { styled } from "styled-components";
 import { ToolOutlined, LoadingOutlined } from "@ant-design/icons";
@@ -9,6 +10,10 @@ import Tips from "../components/Tips";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { visibleCart } from "../providers/cartSlice";
+import { detailProduct } from "../services/product";
+import { useParams } from "react-router-dom";
+import parse from "html-react-parser";
+import { productImgLeft, productImgMain } from "../components/Slider";
 
 const settingsToast = {
   position: "top-right",
@@ -19,18 +24,24 @@ const settingsToast = {
 
 function Product() {
   const dispatch = useDispatch();
+  const { slugProduct } = useParams();
+  const [data, setData] = useState({});
+  const [media, setMedia] = useState([]);
   const [slider2, setSlider2] = useState(null);
   const [desc, setDesc] = useState("desc");
   const [loadingDesc, setLoadingDesc] = useState(false);
   const [color, setColor] = useState({ name: null, id: null });
   const [sizeId, setSizeId] = useState();
 
-  const handleClickSize = (e) => {
-    setSizeId(e.target.id);
+  const handleClickSize = (id) => {
+    setSizeId(id);
   };
 
-  const handleClickColor = (e, name) => {
-    setColor({ id: e.target.id, name: name });
+  const handleClickColor = (id, name) => {
+    setColor({ id: id, name: name });
+    data?.media?.filter(
+      (item) => item?.color?._id === id && setMedia(item.gallery)
+    );
   };
 
   const handleSubmit = () => {
@@ -53,98 +64,45 @@ function Product() {
     }
     dispatch(visibleCart());
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await detailProduct(slugProduct)
+        .then((res) => {
+          setData(res.data);
+          setMedia(res.data.media[0].gallery);
+        })
+        .catch((err) => setData({}));
+    };
+    fetchData();
+  }, []);
+
   return (
     <Wrapper>
       <Row>
         <Col sm="2">
-          <Slider
-            arrows={false}
-            vertical
-            verticalSwiping
-            slidesToShow={3}
-            slidesToScroll={1}
-            focusOnSelect
-            asNavFor={slider2}
-          >
-            <div className="vertical">
-              <div className="relative"></div>
-              <img
-                src="https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694709923592.jpeg"
-                alt="SMART TEE - FIT"
-              />
-            </div>
-
-            <div className="vertical">
-              <div className="relative"></div>
-              <img
-                src="https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694709896321.jpeg"
-                alt="SMART TEE - FIT"
-              />
-            </div>
-
-            <div className="vertical">
-              <div className="relative"></div>
-              <img
-                src="https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694707290525.jpeg"
-                alt="SMART TEE - FIT"
-              />
-            </div>
-
-            <div className="vertical">
-              <div className="relative"></div>
-              <img
-                src="https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694707309221.jpeg"
-                alt="SMART TEE - FIT"
-              />
-            </div>
-
-            <div className="vertical">
-              <div className="relative"></div>
-              <img
-                src="https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694707319437.jpeg"
-                alt="SMART TEE - FIT"
-              />
-            </div>
+          <Slider {...productImgLeft} asNavFor={slider2}>
+            {media?.map((item) => (
+              <div className="vertical" key={item}>
+                <div className="relative"></div>
+                <img src={item} alt="SMART TEE - FIT" />
+              </div>
+            ))}
           </Slider>
         </Col>
         <Col sm="6">
-          <Slider
-            ref={(slider) => setSlider2(slider)}
-            slidesToShow={1}
-            slidesToScroll={1}
-            autoplay
-            autoplaySpeed={2000}
-            arrows={false}
-            className="horizontal"
-          >
-            <img
-              src="https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694709923592.jpeg"
-              alt="SMART TEE - FIT"
-            />
-            <img
-              src="https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694709896321.jpeg"
-              alt="SMART TEE - FIT"
-            />
-            <img
-              src="https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694707290525.jpeg"
-              alt="SMART TEE - FIT"
-            />
-            <img
-              src="https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694707309221.jpeg"
-              alt="SMART TEE - FIT"
-            />
-            <img
-              src="https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694707319437.jpeg"
-              alt="SMART TEE - FIT"
-            />
+          <Slider ref={(slider) => setSlider2(slider)} {...productImgMain}>
+            {media?.map((item) => (
+              <img key={item} src={item} alt="SMART TEE - FIT" />
+            ))}
           </Slider>
         </Col>
         <Col sm="4" className="infor">
           <Name>
-            <h1>Smart tee - fit</h1>
+            <h1>{data?.name}</h1>
           </Name>
           <Price>
-            <h1>299,000</h1>
+            <h1>{data?.price}</h1>
           </Price>
           <Exclusive>
             <h5>Ưu đãi đọc quyền</h5>
@@ -159,46 +117,18 @@ function Product() {
               Chọn Màu: <strong>{color.name}</strong>
             </h4>
             <ul>
-              <li
-                id="1"
-                className={color.id === "1" && "active"}
-                onClick={(e) => {
-                  handleClickColor(e, "Trắng Ngà");
-                }}
-                style={{
-                  backgroundImage: `url("https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694750900787.jpeg")`,
-                }}
-              />
-              <li
-                id="2"
-                className={color.id === "2" && "active"}
-                onClick={(e) => {
-                  handleClickColor(e, "Oliu");
-                }}
-                style={{
-                  backgroundImage: `url("https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694750906701.jpeg")`,
-                }}
-              />
-              <li
-                id="3"
-                className={color.id === "3" && "active"}
-                onClick={(e) => {
-                  handleClickColor(e, "Đen");
-                }}
-                style={{
-                  backgroundImage: `url("https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694750906701.jpeg")`,
-                }}
-              />
-              <li
-                id="4"
-                className={color.id === "4" && "active"}
-                onClick={(e) => {
-                  handleClickColor(e, "Xanh Lơ");
-                }}
-                style={{
-                  backgroundImage: `url("https://cdn.ssstutter.com/products/66z6ao28eNQDG839/092023/1694750915741.jpeg")`,
-                }}
-              />
+              {data?.media?.map((item) => (
+                <li
+                  key={item?.color?._id}
+                  className={color.id === item?.color?._id && "active"}
+                  onClick={(e) =>
+                    handleClickColor(item?.color?._id, item?.color?.name)
+                  }
+                  style={{
+                    backgroundImage: `url(${item.thumbnail})`,
+                  }}
+                />
+              ))}
             </ul>
           </Color>
           <Size>
@@ -211,34 +141,14 @@ function Product() {
               </div>
             </h4>
             <ul>
-              <li
-                id="1"
-                className={sizeId === "1" && "active"}
-                onClick={handleClickSize}
-              >
-                0
-              </li>
-              <li
-                id="2"
-                className={sizeId === "2" && "active"}
-                onClick={handleClickSize}
-              >
-                1
-              </li>
-              <li
-                id="3"
-                className={sizeId === "3" && "active"}
-                onClick={handleClickSize}
-              >
-                2
-              </li>
-              <li
-                id="4"
-                className={sizeId === "4" && "active"}
-                onClick={handleClickSize}
-              >
-                3
-              </li>
+              {data?.sizes?.map((size) => (
+                <li
+                  className={sizeId === size?._id && "active"}
+                  onClick={() => handleClickSize(size?._id)}
+                >
+                  {size?.name}
+                </li>
+              ))}
             </ul>
           </Size>
 
@@ -261,9 +171,7 @@ function Product() {
                   if (desc !== "desc") {
                     setLoadingDesc(true);
                     setDesc("desc");
-                    setTimeout(() => {
-                      setLoadingDesc(false);
-                    }, 500);
+                    setTimeout(() => setLoadingDesc(false), 500);
                   }
                 }}
               >
@@ -271,43 +179,19 @@ function Product() {
               </li>
               <li
                 className={desc === "shipping" && "active"}
-                onClick={() => {
-                  setDesc("shipping");
-                }}
+                onClick={() => setDesc("shipping")}
               >
                 Giao hàng và thanh toán
               </li>
               <li
                 className={desc === "tips" && "active"}
-                onClick={() => {
-                  setDesc("tips");
-                }}
+                onClick={() => setDesc("tips")}
               >
                 Tips
               </li>
             </ul>
-            <div className="content">
-              {desc === "desc" && !loadingDesc && (
-                <ul
-                  class="cdx-block cdx-list cdx-list--unordered"
-                  contenteditable="false"
-                >
-                  <li class="cdx-list__item">Form áo: Regular</li>
-                  <li class="cdx-list__item">
-                    Chất liệu: Len lông thỏ <b>xuất Úc</b>,{" "}
-                    <b>mát &amp; không nhăn</b>.
-                  </li>
-                  <li class="cdx-list__item">Áo cổ tròn, tay raglan.</li>
-                  <li class="cdx-list__item">
-                    Có hình <b>thêu chữ S</b> ở giữa thân trước của áo
-                    <br />
-                  </li>
-                  <li class="cdx-list__item">
-                    Có phối viền tiệp màu hình thêu ở gấu áo
-                    <br />
-                  </li>
-                </ul>
-              )}
+            <div className="content" id="desc">
+              {desc === "desc" && !loadingDesc && parse(data?.desc + "")}
               {desc === "shipping" && <DescShipping />}
               {desc === "tips" && <Tips />}
             </div>
