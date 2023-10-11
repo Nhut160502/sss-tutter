@@ -21,7 +21,7 @@ const Wrapper = styled.div`
   z-index: 1;
   visibility: hidden;
   transition: all 0.4s;
-  z-index: 9999;
+  z-index: 1;
 
   &.active {
     visibility: visible;

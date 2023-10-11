@@ -4,7 +4,10 @@ import { DownOutlined, PicCenterOutlined } from "@ant-design/icons";
 import { Col, Row } from "react-bootstrap";
 import Product from "../components/Product";
 import Button from "../components/Button";
-import { getList } from "../services/product";
+import { getList as getListProduct } from "../services/product";
+import { getList as getListCategory } from "../services/category";
+import { getList as getListColor } from "../services/color";
+import { getList as getListSize } from "../services/size";
 
 const Category = () => {
   const [openCategory, setOpenCategory] = useState(false);
@@ -36,11 +39,35 @@ const Category = () => {
     };
   }, [scroll]);
 
-  const [data, setData] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [colors, setColors] = useState([]);
+  const [sizes, setSizes] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      await getList().then((res) => setData(res.data));
+      await getListProduct().then((res) => setProducts(res.data));
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getListCategory().then((res) => setCategories(res.data));
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getListColor().then((res) => setColors(res.data));
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      // await getListSize().then((res) => setSizes(res.data));
     };
     fetchData();
   }, []);
@@ -64,39 +91,11 @@ const Category = () => {
         <ContentOption>
           <Categories className={openCategory && "active"}>
             <Row>
-              <Col sm="3">
-                <h3>Sơ mi & áo kiểu</h3>
-              </Col>
-              <Col sm="3">
-                <h3>Áo thun</h3>
-              </Col>
-              <Col sm="3">
-                <h3>Quần</h3>
-              </Col>
-              <Col sm="3">
-                <h3>Len dệt</h3>
-              </Col>
-              <Col sm="3">
-                <h3>Phụ kiện</h3>
-              </Col>
-              <Col sm="3">
-                <h3>Áo Blazer & áo khoác</h3>
-              </Col>
-              <Col sm="3">
-                <h3>Quần bò</h3>
-              </Col>
-              <Col sm="3">
-                <h3>Quần short</h3>
-              </Col>
-              <Col sm="3">
-                <h3>Giày</h3>
-              </Col>
-              <Col sm="3">
-                <h3>Túi & ví</h3>
-              </Col>
-              <Col sm="3">
-                <h3>Hoodie & Sweatershirt</h3>
-              </Col>
+              {categories?.map((item) => (
+                <Col key={item._id} sm="3">
+                  <h3>{item?.name}</h3>
+                </Col>
+              ))}
             </Row>
           </Categories>
           <RefineBy className={openRefineBy && "active"}>
@@ -104,121 +103,26 @@ const Category = () => {
               <Col sm="4">
                 <h2>Color</h2>
                 <ul>
-                  <li>
-                    <div className="item">
-                      <p style={{ backgroundColor: "rgb(255, 255, 0)" }}></p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <p style={{ backgroundColor: "rgb(255, 255, 0)" }}></p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <p style={{ backgroundColor: "rgb(255, 255, 0)" }}></p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <p style={{ backgroundColor: "rgb(255, 255, 0)" }}></p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <p style={{ backgroundColor: "rgb(255, 255, 0)" }}></p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <p style={{ backgroundColor: "rgb(255, 255, 0)" }}></p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <p style={{ backgroundColor: "rgb(255, 255, 0)" }}></p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <p style={{ backgroundColor: "rgb(255, 255, 0)" }}></p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <p style={{ backgroundColor: "rgb(255, 255, 0)" }}></p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <p style={{ backgroundColor: "rgb(255, 255, 0)" }}></p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <p style={{ backgroundColor: "rgb(255, 255, 0)" }}></p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <p style={{ backgroundColor: "rgb(255, 255, 0)" }}></p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <p style={{ backgroundColor: "rgb(255, 255, 0)" }}></p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <p style={{ backgroundColor: "rgb(255, 255, 0)" }}></p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <p style={{ backgroundColor: "rgb(255, 255, 0)" }}></p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <p style={{ backgroundColor: "rgb(255, 255, 0)" }}></p>
-                    </div>
-                  </li>
+                  {colors?.map((item) => (
+                    <li key={item._id}>
+                      <div className="item">
+                        <p style={{ backgroundColor: `${item.code}` }}></p>
+                      </div>
+                    </li>
+                  ))}
                 </ul>
               </Col>
               <Col sm="4">
                 <h2>Size Áo</h2>
                 <ul className="size">
-                  <li>
-                    <div className="item">
-                      <input type="checkbox" name="size[]" id="" />
-                      <label htmlFor="">1</label>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <input type="checkbox" name="size[]" id="" />
-                      <label htmlFor="">2</label>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <input type="checkbox" name="size[]" id="" />
-                      <label htmlFor="">3</label>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <input type="checkbox" name="size[]" id="" />
-                      <label htmlFor="">4</label>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="item">
-                      <input type="checkbox" name="size[]" id="" />
-                      <label htmlFor="">5</label>
-                    </div>
-                  </li>
+                  {sizes?.map((size) => (
+                    <li key={size?._id}>
+                      <div className="item">
+                        <input type="checkbox" name="size[]" id="" />
+                        <label htmlFor="">{size}</label>
+                      </div>
+                    </li>
+                  ))}
                 </ul>
                 <h2>Size Quần</h2>
                 <ul className="size">
@@ -325,54 +229,11 @@ const Category = () => {
       </Option>
       <Content>
         <Row>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
-          <Col sm="3">
-            <Product />
-          </Col>
+          {products?.map((item) => (
+            <Col key={item?._id} sm="3">
+              <Product data={item} />
+            </Col>
+          ))}
         </Row>
       </Content>
     </Wrapper>

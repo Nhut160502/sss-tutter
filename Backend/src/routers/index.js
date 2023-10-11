@@ -9,10 +9,16 @@ import ordersRouter from "./private/orders.js";
 import cartsRouter from "./private/carts.js";
 
 import products from "./public/product.js";
+import categories from "./public/category.js";
+import colors from "./public/colors.js";
+import sizes from "./public/sizes.js";
 
 const router = express.Router();
 
 router.use("/public/product", products);
+router.use("/public/category", categories);
+router.use("/public/color", colors);
+router.use("/public/size", sizes);
 
 // private
 router.use("/private/type", typesRouters);
