@@ -61,7 +61,7 @@ const List = () => {
   useEffect(() => {
     document.title = 'DANH SÁCH LOẠI SẢN PHẨM'
     const fetchData = async () => {
-      await getTypes().then((res) => setList(res.data))
+      await getTypes().then((res) => setList(res?.data))
     }
     fetchData()
   }, [])
